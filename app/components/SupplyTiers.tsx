@@ -94,7 +94,7 @@ export default function SupplyTiers() {
                   </div>
                   <div className="relative mt-16 mb-6">
                     <Image
-                      src="/group.svg"
+                      src="/Group.svg"
                       alt=""
                       width={22}
                       height={22}
