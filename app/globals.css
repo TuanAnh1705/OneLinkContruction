@@ -1,26 +1,172 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --bg: #ffffff;
+  --bg-hero: #ffffff;
+  --bg-section: #f7f8fa;
+  --blue: #263C85;
+  --blue-hover: #1e3070;
+  --text: #0a0b10;
+  --text-muted: #525c6e;
+  --text-dim: #9aa3b0;
+  --border: rgba(10, 11, 16, 0.08);
+  --border-hover: rgba(10, 11, 16, 0.15);
+  --radius: 8px;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --color-bg: var(--bg);
+  --color-blue: var(--blue);
+  --font-sans: var(--font-epilogue);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-epilogue), -apple-system, BlinkMacSystemFont, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 3px; }
+::-webkit-scrollbar-track { background: #f0f1f4; }
+::-webkit-scrollbar-thumb { background: #263C85; border-radius: 2px; }
+::-webkit-scrollbar-thumb:hover { background: #3651b5; }
+
+/* Nav scroll state — dark overlay on white page */
+.nav-scrolled {
+  background: rgba(8, 9, 13, 0.94) !important;
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+/* Isolation Mode — single wave cycle */
+@keyframes isolationWave {
+  0%   { clip-path: ellipse(2% 3% at 50% 0%);     opacity: 0; }
+  4%   { clip-path: ellipse(14% 11% at 50% 0%);   opacity: 1; }
+  80%  { clip-path: ellipse(145% 126% at 50% 0%);  opacity: 1; }
+  93%  { clip-path: ellipse(156% 141% at 50% 0%);  opacity: 0; }
+  100% { clip-path: ellipse(158% 144% at 50% 0%);  opacity: 0; }
+}
+
+.isolation-wave-container {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  transform: translateZ(0);
+  will-change: clip-path, opacity;
+  contain: paint;
+  animation: isolationWave 3.5s linear infinite;
+}
+
+/* Dừng sóng khi hero ra khỏi viewport — tránh repaint vô ích khi scroll các section dưới */
+.waves-paused .isolation-wave-container {
+  animation-play-state: paused;
+}
+
+
+/* Contour path animations */
+@keyframes cpath1 {
+  0%   { stroke-dashoffset: 5000; opacity: 0; }
+  6%   { opacity: 0.7; }
+  88%  { opacity: 0.3; }
+  96%  { opacity: 0; }
+  100% { stroke-dashoffset: 0; opacity: 0; }
+}
+@keyframes cpath2 {
+  0%   { stroke-dashoffset: -5000; opacity: 0; }
+  6%   { opacity: 0.5; }
+  88%  { opacity: 0.15; }
+  96%  { opacity: 0; }
+  100% { stroke-dashoffset: 0; opacity: 0; }
+}
+@keyframes cpath3 {
+  0%   { stroke-dashoffset: 4000; opacity: 0; }
+  8%   { opacity: 0.6; }
+  88%  { opacity: 0.2; }
+  96%  { opacity: 0; }
+  100% { stroke-dashoffset: -1000; opacity: 0; }
+}
+
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes shimmer {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(400%); }
+}
+
+/* Build With Us — left-to-right shimmer on hover */
+.btn-build {
+  position: relative;
+  overflow: hidden;
+}
+.btn-build::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  width: 40%;
+  background: linear-gradient(to right, transparent 0%, rgba(255,255,255,0.15) 50%, transparent 100%);
+  transform: translateX(-160%);
+  transition: none;
+}
+.btn-build:hover::after {
+  transform: translateX(340%);
+  transition: transform 1.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* Product card image zoom */
+.product-card:hover .product-img {
+  transform: scale(1.04);
+}
+
+/* Contour SVG paths */
+.contour-path {
+  stroke-dasharray: 3000;
+  stroke-dashoffset: 3000;
+  animation: cpath1 var(--duration, 12s) var(--delay, 0s) infinite linear;
+}
+.contour-path-rev {
+  stroke-dasharray: 3000;
+  stroke-dashoffset: -3000;
+  animation: cpath2 var(--duration, 14s) var(--delay, 0s) infinite linear;
+}
+
+/* Animated number ticker */
+@keyframes count-up {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Form focus glow */
+.form-input:focus {
+  outline: none;
+  border-color: rgba(38, 60, 133, 0.6);
+  box-shadow: 0 0 0 2px rgba(38, 60, 133, 0.12);
+}
+
+/* Section fade-in on scroll */
+.section-visible {
+  animation: fade-up 0.8s ease forwards;
+}
+
+/* Dropdown morph — expands from pill height (40px) downward */
+@keyframes dropdownMorphOpen {
+  from { clip-path: inset(0 0 calc(100% - 44px) 0 round 10px); }
+  to   { clip-path: inset(0 0 0 0 round 10px); }
+}
+
+/* Dropdown morph — collapses back to pill height */
+@keyframes dropdownMorphClose {
+  from { clip-path: inset(0 0 0 0 round 10px); }
+  to   { clip-path: inset(0 0 calc(100% - 44px) 0 round 10px); }
 }
