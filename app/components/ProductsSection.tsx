@@ -99,15 +99,15 @@ export default function ProductsSection() {
   )
 
   return (
-    <section ref={sectionRef} className="relative w-full bg-white py-32 overflow-hidden" data-navbar-theme="light">
+    <section ref={sectionRef} className="relative w-full bg-white md:py-32 py-10 md:translate-y-0 -translate-y-5 overflow-hidden" data-navbar-theme="light">
       <div className="max-w-360 mx-auto px-6 lg:px-10">
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-y-12 lg:gap-0 items-center relative">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-y-10 lg:gap-0 items-center relative">
 
           {/* Lớp Chữ */}
           <div className="lg:col-span-7 lg:col-start-1 lg:row-start-1 relative z-10 flex flex-col justify-between h-full min-h-87.5 pointer-events-none">
             
-            <p className="font-normal text-[#0a0b10] leading-relaxed pointer-events-auto" style={{ fontSize: 'clamp(30px, 2vw, 42px)' }}>
+            <p className="font-normal text-[#0a0b10] leading-10 pointer-events-auto" style={{ fontSize: 'clamp(20px, 2vw, 42px)' }}>
               {words.map((word, i) => (
                 <ScrollWord 
                   key={i} 
@@ -121,14 +121,14 @@ export default function ProductsSection() {
 
             <motion.div 
               style={{ filter: sharedBlur, opacity: sharedOpacity, y: elementY }}
-              className="pointer-events-auto mt-auto pt-10"
+              className="pointer-events-auto md:translate-y-0 -translate-y-25 md:mt-auto md:pt-10"
             >
               <ContactButton label="Sign Up Here" href="#contact" align="left" backgroundColor="#3A3A3A" textColor="#F4F4F4" />
             </motion.div>
           </div>
 
           {/* Lớp Ảnh */}
-          <div className="lg:col-span-8 lg:col-start-5 lg:row-start-1 relative z-0 lg:pt-40">
+          <div className="lg:col-span-8 lg:col-start-5 lg:row-start-1 relative z-0 md:translate-y-0 -translate-y-20 lg:pt-40">
             <motion.div
               className="overflow-hidden rounded-tl-2xl rounded-tr-2xl rounded-br-2xl rounded-bl-[120px]"
               style={{ filter: sharedBlur, opacity: sharedOpacity, scale: imageScale, y: elementY }}

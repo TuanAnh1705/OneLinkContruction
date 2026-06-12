@@ -3,13 +3,15 @@ export default function SourcingSection() {
     <section
       id="why-olco"
       className="relative w-full bg-[#3A3A3A] py-16 lg:py-30"
+      // Phủ màu nền tràn 2px ra mọi phía — che khe hở sub-pixel (line trắng) quanh section ở DPR lẻ
+      style={{ boxShadow: '0 0 0 2px #3A3A3A' }}
     >
       <div className="max-w-480 md:-mt-20 mx-auto grid grid-cols-12 gap-y-10 lg:gap-33 items-start px-6 lg:px-36">
         {/* Left — main heading */}
         <div className="col-span-12 lg:col-span-7">
           <h2
             className="font-medium text-[#F4F4F4] leading-[1.05] tracking-tight"
-            style={{ fontSize: 'clamp(36px, 4.3vw, 88px)' }}
+            style={{ fontSize: 'clamp(28px, 4.3vw, 88px)' }}
           >
             The Sourcing Partner That Builds It Right{' '} <br/>
             <span

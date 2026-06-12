@@ -18,10 +18,16 @@ export default function ContactSection() {
           quality={85}
           className="object-cover object-center"
         />
+        {/* Fade từ #3A3A3A (màu nền section phía trên) xuống trong suốt — hoà mép trên của ảnh
+            với nền tối bên trên, tránh đường cắt cứng (giống cách hero fade sang trắng ở mép dưới) */}
+        <div
+          className="absolute inset-x-0 top-0 h-[70%]"
+          style={{ background: 'linear-gradient(to bottom, #3A3A3A 0%, rgba(58,58,58,0) 100%)' }}
+        />
       </div>
 
       <div
-        className="relative z-10 max-w-8xl mx-auto flex flex-col px-6 pt-20 lg:px-36 lg:pt-30" // Cắt bỏ padding bottom để set margin âm
+        className="relative z-10 max-w-8xl mx-auto flex flex-col px-6 pt-20 pb-16 lg:px-36 lg:pt-30 lg:pb-0" // Mobile có padding bottom; desktop cắt bỏ để set margin âm
       >
         {/* Top — Heading (Được giải phóng width, không bị ép bởi form) */}
         <div className="w-full mb-16">
@@ -34,13 +40,8 @@ export default function ContactSection() {
         </div>
 
         {/* Bottom — Form (Nằm dưới chữ, giữ nguyên kích thước cũ, đẩy sang phải và tràn xuống Footer) */}
-        <div
-          className="w-full lg:w-7/14 ml-auto relative z-50" 
-          style={{ 
-            marginBottom: '-160px', // Margin âm để hút phần Footer bên dưới dịch lên
-            transform: 'translateY(60px)' // Đẩy nhẹ form trượt xuống đè lên mặt Footer
-          }}
-        >
+        {/* Margin âm + translate chỉ áp dụng desktop — mobile nằm gọn trong section, không lấn xuống Footer */}
+        <div className="w-full lg:w-7/14 ml-auto relative z-50 lg:-mb-40 lg:translate-y-[60px]">
           <div
             className="rounded-sm border border-white/8 shadow-2xl p-6 sm:p-10 lg:p-[79px_59px]"
             style={{ background: '#3A3A3A' }}

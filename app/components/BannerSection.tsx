@@ -1,15 +1,59 @@
+'use client'
+
+import { useRef } from 'react'
 import Image from 'next/image'
+import gsap from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { useGSAP } from '@gsap/react'
+
+gsap.registerPlugin(ScrollTrigger)
 
 const badges = [
-  { label: 'Free detailed written quotes', x: 'left' },
-  { label: 'Pre-shipment QA on every order', x: 'right-top' },
-  { label: 'Aligned to AS/NZS and NCC requirements', x: 'right-bottom' },
+  'Free detailed written quotes',
+  'Pre-shipment QA on every order',
+  'Aligned to AS/NZS and NCC requirements',
 ]
 
 export default function BannerSection() {
+  const sectionRef = useRef<HTMLElement>(null)
+  const helmetRef = useRef<HTMLDivElement>(null)
+
+  useGSAP(
+    () => {
+      // Parallax chỉ chạy trên desktop; mobile giữ tĩnh
+      const mm = gsap.matchMedia()
+
+      mm.add('(min-width: 1024px)', () => {
+        const helmet = helmetRef.current
+        if (!helmet) return
+
+        // Mũ trôi dọc chậm hơn nền khi section đi qua viewport (parallax)
+        gsap.fromTo(
+          helmet,
+          { y: -70 },
+          {
+            y: 90,
+            ease: 'none',
+            scrollTrigger: {
+              trigger: sectionRef.current,
+              start: 'top bottom',
+              end: 'bottom top',
+              scrub: true,
+              invalidateOnRefresh: true,
+            },
+          }
+        )
+      })
+    },
+    { scope: sectionRef }
+  )
+
   return (
     <section
+      ref={sectionRef}
       className="relative w-full overflow-hidden bg-[#3A3A3A] lg:min-h-[clamp(500px,33.7vw,647px)]"
+      // Phủ màu nền tràn 2px ra mọi phía — che khe hở sub-pixel (line trắng) quanh section ở DPR lẻ
+      style={{ boxShadow: '0 0 0 2px #3A3A3A' }}
     >
       {/* Background image */}
       <div className="absolute inset-0 z-0">
@@ -18,7 +62,7 @@ export default function BannerSection() {
           alt=""
           fill
           quality={85}
-          className="object-contain object-center"
+          className="object-cover opacity-35 lg:object-contain lg:opacity-100 object-center"
         />
         <div className="absolute inset-0 bg-linear-to-b from-[#3A3A3A] to-transparent" style={{ bottom: '60%' }} />
         <div className="absolute inset-0 bg-linear-to-b from-transparent to-[#3A3A3A]" style={{ top: '60%' }} />
@@ -27,19 +71,23 @@ export default function BannerSection() {
 
       {/* Content */}
       <div className="relative z-10 max-w-480 mx-auto h-full px-6 lg:px-36">
-        <div className="relative min-h-75 lg:min-h-[clamp(500px,33.7vw,647px)]">
-          {/* Helmet image — centered */}
+        <div className="relative min-h-55 lg:min-h-[clamp(500px,33.7vw,647px)]">
+          {/* Helmet image — mobile: neo góc trái dưới; desktop: căn giữa */}
           <div
-            className="absolute left-1/2 -translate-x-1/2 bottom-0 z-10"
-            style={{ width: 'clamp(280px, 51.4vw, 986px)', height: 'clamp(200px, 34.3vw, 658px)' }}
+            className="absolute bottom-0 z-10 -left-22 w-[78vw] h-[52vw] lg:left-1/2 lg:-translate-x-1/2 lg:w-[clamp(210px,51.4vw,986px)] lg:h-[clamp(150px,34.3vw,658px)]"
           >
-            <Image
-              src="/HELMET-1 1.png"
-              alt="OLCO Safety Helmet"
-              fill
-              quality={90}
-              className="object-contain object-bottom"
-            />
+            {/* Wrapper riêng cho parallax — tránh đụng transform căn giữa của div ngoài */}
+            <div ref={helmetRef} className="absolute inset-0" style={{ willChange: 'transform' }}>
+              {/* Hit area cắt theo hình mũ — phải đứng TRƯỚC Image để selector `.helmet-hit:hover + .helmet-glow` ăn */}
+              <div className="helmet-hit absolute inset-0 z-10" aria-hidden="true" />
+              <Image
+                src="/HELMET-1 1.png"
+                alt="OLCO Safety Helmet"
+                fill
+                quality={90}
+                className="object-contain object-bottom helmet-glow pointer-events-none"
+              />
+            </div>
           </div>
 
           {/* Badge left */}
@@ -65,13 +113,13 @@ export default function BannerSection() {
           >
             <BadgeButton label="Aligned to AS/NZS and NCC requirements" noSlide />
           </div>
-        </div>
 
-        {/* Badges mobile — xếp tĩnh dưới helmet */}
-        <div className="flex lg:hidden flex-wrap justify-center gap-3 pt-6 pb-10">
-          {badges.map((b) => (
-            <BadgeButton key={b.label} label={b.label} noSlide />
-          ))}
+          {/* Badges mobile — cụm bên phải helmet, hơi đè lên helmet, xếp so le như thiết kế */}
+          <div className="lg:hidden absolute left-[37%] top-[45%] -translate-y-1/2 z-20 flex flex-col items-start gap-2.5">
+            {badges.map((label) => (
+              <BadgeButton key={label} label={label} noSlide />
+            ))}
+          </div>
         </div>
       </div>
     </section>
@@ -81,10 +129,9 @@ export default function BannerSection() {
 function BadgeButton({ label, noSlide }: { label: string; noSlide?: boolean }) {
   return (
     <div
-      className="group bg-[#F4F4F4]/70 flex items-center cursor-default rounded-xl border border-[#D1D0E2]/60 backdrop-blur-md transition-colors duration-300 hover:border-[#D1D0E2]"
-      style={{
-        padding: '18px 28px',
-      }}
+      className="group flex items-center cursor-default rounded-lg lg:rounded-xl border border-[#D1D0E2]/60 transition-colors duration-300 hover:border-[#D1D0E2] px-4 py-2.5 lg:px-7 lg:py-4.5"
+      // Nền giống các badge category ở hero section
+      style={{ background: 'rgba(58,58,58,0.5)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)' }}
     >
       <div className="relative">
         {!noSlide && (
@@ -98,8 +145,7 @@ function BadgeButton({ label, noSlide }: { label: string; noSlide?: boolean }) {
           />
         )}
         <span
-          className={`block font-medium text-[#000000] whitespace-nowrap transition-all duration-300${noSlide ? '' : ' pl-0 group-hover:pl-8'}`}
-          style={{ fontSize: 'clamp(13px, 1.1vw, 20px)' }}
+          className={`block font-medium text-white whitespace-nowrap text-[11px] lg:text-[clamp(13px,1.1vw,20px)] transition-all duration-300${noSlide ? '' : ' pl-0 group-hover:pl-8'}`}
         >
           {label}
         </span>

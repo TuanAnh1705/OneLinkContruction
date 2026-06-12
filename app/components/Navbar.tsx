@@ -81,25 +81,10 @@ export default function Navbar() {
   return (
     <nav className="fixed top-0 left-0 right-0 z-50">
       <div
-        className="max-w-480 mx-auto flex items-center justify-between px-6 h-18 lg:px-36 lg:h-25.5"
+        className="max-w-480 mx-auto flex items-center justify-end px-6 h-18 lg:px-36 lg:h-25.5"
       >
-        {/* Logo — desktop only; mobile logo nằm cố định trong HeroSection */}
-        <a href="#" className="hidden lg:block shrink-0" style={{ alignSelf: 'center', lineHeight: 0 }}>
-          <Image
-            src="/Layer_1.svg"
-            alt="OLCO"
-            width={120}
-            height={40}
-            priority
-            style={{
-              display: 'block',
-              width: '160px',
-              height: '90px',
-              filter: logoOnLight ? 'brightness(0)' : 'brightness(0) invert(1)',
-              transition: 'filter 0.3s ease',
-            }}
-          />
-        </a>
+        {/* Logo không nằm trong navbar — nó được pin cố định trong HeroSection,
+            chỉ cụm menu + button bên phải đi theo khi scroll */}
 
         {/* Right side */}
         <div className="hidden lg:flex items-center gap-3">
@@ -110,7 +95,7 @@ export default function Navbar() {
               style={{
                 display: 'flex',
                 alignItems: 'center',
-                background: 'rgba(58, 58, 58, 0.5)',
+                background: 'rgba(0, 0, 0, 0.3)',
                 backdropFilter: 'blur(11.4px)',
                 WebkitBackdropFilter: 'blur(11.4px)',
                 borderRadius: '10px',
@@ -140,8 +125,15 @@ export default function Navbar() {
                   <a
                     key={link}
                     href={`#${link.toLowerCase().replace(/\s/g, '-')}`}
-                    className="text-[15px] font-medium text-[#FFFFFF] hover:text-white/70 transition-colors duration-200"
-                    style={{ whiteSpace: 'nowrap' }}
+                    className="text-[15px] font-medium text-[#FFFFFF]"
+                    onMouseEnter={() => setHoveredLink(link)}
+                    onMouseLeave={() => setHoveredLink(null)}
+                    style={{
+                      whiteSpace: 'nowrap',
+                      // Hover từng link giống dropdown: link đang hover giữ rõ, các link còn lại mờ đi
+                      opacity: hoveredLink === null || hoveredLink === link ? 1 : 0.7,
+                      transition: 'opacity 0.15s ease',
+                    }}
                   >
                     {link}
                   </a>
@@ -187,7 +179,7 @@ export default function Navbar() {
                   top: 0,
                   right: 0,
                   minWidth: '190px',
-                  background: 'rgba(58, 58, 58, 0.5)',
+                  background: 'rgba(0, 0, 0, 0.3)',
                   backdropFilter: 'blur(11.4px)',
                   WebkitBackdropFilter: 'blur(11.4px)',
                   borderRadius: '10px',

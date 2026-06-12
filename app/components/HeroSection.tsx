@@ -29,16 +29,22 @@ export default function HeroSection() {
 
   return (
     <section ref={sectionRef} className="relative w-full overflow-hidden bg-white min-h-[110vh] lg:min-h-[170vh]">
-      {/* Logo mobile — nằm trong hero, scroll đi cùng section (không fixed) */}
-      <div className="absolute top-4 left-6 z-20 lg:hidden">
-        <Image
-          src="/Layer_1.svg"
-          alt="OLCO"
-          width={120}
-          height={68}
-          priority
-          style={{ width: 110, height: 'auto', filter: 'brightness(0) invert(1)' }}
-        />
+      {/* Logo — pin cố định trong hero, scroll đi cùng section (không fixed).
+          Căn lề theo đúng container của Navbar để thẳng hàng với cụm menu bên phải */}
+      <div className="absolute inset-x-0 top-0 z-20 pointer-events-none">
+        <div className="max-w-480 mx-auto px-6 lg:px-36">
+          <a href="#" className="inline-block pointer-events-auto pt-4 lg:pt-1.5">
+            <Image
+              src="/Layer_1.svg"
+              alt="OLCO"
+              width={120}
+              height={68}
+              priority
+              className="w-27.5 lg:w-40 h-auto lg:h-22.5"
+              style={{ filter: 'brightness(0) invert(1)' }}
+            />
+          </a>
+        </div>
       </div>
 
       {/* ── Background building image ── */}
@@ -51,8 +57,17 @@ export default function HeroSection() {
           quality={95}
           className="object-cover object-top"
         />
-        <div className="absolute inset-0 bg-linear-to-b from-transparent to-white" style={{ top: '70%' }} />
+        {/* Fade sang trắng — phải đạt trắng 100% trước mép dưới section (mốc 85%),
+            nếu không sẽ lộ đường line cắt cứng ở ranh giới với section kế tiếp */}
+        <div
+          className="absolute inset-x-0 bottom-0 top-[55%] lg:top-[70%]"
+          style={{ background: 'linear-gradient(to bottom, rgba(255,255,255,0) 0%, #ffffff 85%)' }}
+        />
       </div>
+
+      {/* Vùng cuối hero đã fade sang trắng — báo cho Navbar đổi logo sang màu tối,
+          nếu không logo trắng sẽ tàng hình trên nền trắng khi scroll qua đoạn này */}
+      <div data-navbar-theme="light" aria-hidden className="absolute inset-x-0 bottom-0 pointer-events-none" style={{ top: '72%' }} />
 
       {[0, 2.5].map((delay) => (
         <div
@@ -75,18 +90,18 @@ export default function HeroSection() {
           {/* H1: Chiếm 7 cột, luôn nằm trên cùng */}
           <div className="col-span-12 lg:col-span-10">
             <h1
-              className="font-normal leading-[1.05] tracking-[-0.03em] text-white text-left"
+              className="font-normal leading-[1.05] tracking-[-0.03em] text-white text-center lg:text-left"
               style={{ fontSize: 'clamp(34px, 5vw, 77px)', maxWidth: '1500px' }}
             >
-              AS/NZ compliant materials, sourced directly from Asia
+              AS/NZ compliant materials, <br className="hidden lg:block" /> sourced directly from Asia
             </h1>
           </div>
 
           {/* Paragraph + Contact: Chiếm 12 cột, luôn nằm ở hàng dưới */}
-          <div className="col-span-12 flex justify-end">
-            <div className="flex flex-col items-end" style={{ maxWidth: '510px' }}>
+          <div className="col-span-12 flex justify-center lg:justify-end">
+            <div className="flex flex-col items-center lg:items-end" style={{ maxWidth: '510px' }}>
               <p
-                className="font-normal leading-relaxed text-white text-right"
+                className="font-normal leading-relaxed text-white text-center lg:text-right"
                 style={{ fontSize: 'clamp(14px, 0.95vw, 16px)' }}
               >
                 Access high-quality, compliant materials through OLCO’s factory network. Reduce costs while unlocking a wider range of products, finishes, and custom manufacturing solutions.
@@ -99,22 +114,20 @@ export default function HeroSection() {
           </div>
         </div>
 
-        <div className="md:translate-y-20 flex justify-center">
-          <a
-            href="#products"
-            className="flex items-center gap-3 text-[#1F1F21] text-[18px] font-medium px-8 py-3.5 rounded-lg transition-all duration-200 hover:opacity-80"
-            style={{ background: '#D6D9DB' }}
+        <div className="mt-12 md:mt-0 md:translate-y-20 flex justify-center">
+          <div
+            className="flex items-center justify-center gap-3 cursor-default text-[#F4F4F4] text-[14px] md:text-[18px] font-medium px-5 md:px-8 py-3 md:py-3.5 rounded-lg text-center border border-[#F4F4F4]"
           >
             Download Our Product Catalogues Here
-          </a>
+          </div>
         </div>
 
-        <div className="md:translate-y-30 flex flex-wrap gap-3 justify-center" id="products">
+        <div className="mt-5 md:mt-0 md:translate-y-30 grid grid-cols-2 gap-2 md:flex md:flex-wrap md:gap-3 md:justify-center" id="products">
           {categories.map((cat) => (
             <button
               key={cat}
-              className="text-white text-[18px] px-6 py-3 rounded-xl transition-all duration-200 hover:opacity-80"
-              style={{ background: 'rgba(31,31,33,0.22)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)' }}
+              className="text-white text-[13px] md:text-[18px] px-4 md:px-6 py-2.5 md:py-3 rounded-lg md:rounded-xl cursor-pointer transition-all duration-200 hover:opacity-80"
+              style={{ background: 'rgba(58,58,58,0.5)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)' }}
             >
               {cat}
             </button>

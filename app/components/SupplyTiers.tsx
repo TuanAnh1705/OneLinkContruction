@@ -51,10 +51,12 @@ export default function SupplyTiers() {
       {/* overflow-hidden removed so card can translate upward past sticky boundary */}
       <div className="lg:sticky lg:top-0 lg:h-screen w-full">
         <motion.div
-          className="w-full lg:h-full bg-[#3A3A3A] overflow-hidden flex flex-col justify-center py-20 lg:py-0"
-          style={isMobile ? undefined : { scale, clipPath }}
+          className="w-full lg:h-full bg-[#3A3A3A] overflow-hidden flex flex-col justify-center py-20 lg:py-0 max-lg:transform-none! max-lg:[clip-path:none]!"
+          // Shadow cùng màu nền tràn 2px ra mọi phía — che khe hở sub-pixel (line trắng)
+          // quanh section ở DPR lẻ (Windows scaling 125%/150%); desktop bị clip-path cắt nên không ảnh hưởng animation
+          style={isMobile ? { boxShadow: '0 0 0 2px #3A3A3A' } : { scale, clipPath }}
         >
-          <div className="w-full max-w-screen-2xl mx-auto px-10 lg:px-36">
+          <div className="w-full max-w-screen-2xl mx-auto px-6 lg:px-36">
             {/* Header */}
             <h2
               className="text-white font-medium tracking-tight"
@@ -73,7 +75,7 @@ export default function SupplyTiers() {
             {/* Tier cards */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mt-12 lg:mt-16">
               {supplyTiers.map((tier) => (
-                <div key={tier.title} className="group border border-white/20 hover:border-white p-10 transition-all duration-300">
+                <div key={tier.title} className="group border border-white/20 hover:border-white p-6 lg:p-10 transition-all duration-300">
                   <div className="relative w-40 h-31.25">
                     <Image
                       src="/Vector1.svg"

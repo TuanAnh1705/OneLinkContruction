@@ -8,12 +8,12 @@ export default function Footer() {
     >
 
       <div
-        className="relative z-10 max-w-480 mx-auto pt-20 px-6 lg:px-29.75"
+        className="relative z-10 max-w-480 mx-auto pt-14 lg:pt-20 pb-24 lg:pb-0 px-6 lg:px-29.75"
       >
         
 
         {/* Link columns */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-10 mb-12">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-10 mb-10 lg:mb-12">
           {/* Contact Us */}
           <div>
             <h4 className="text-white font-semibold mb-6" style={{ fontSize: '18px' }}>
@@ -67,15 +67,15 @@ export default function Footer() {
           alt="OLCO"
           width={355}
           height={355}
-          className="mb-12"
+          className="mb-10 lg:mb-12"
           style={{ height: 'clamp(60px, 10vw, 150px)', width: 'auto' }}
         />
         {/* Bottom bar */}
-        <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between py-5 gap-4">
+        <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between border-t border-white/10 lg:border-t-0 pt-6 lg:pt-5 pb-5 gap-3 lg:gap-4">
           <p className="text-white/35" style={{ fontSize: '15px' }}>
             © 2026 OLCO, All Rights Reserved
           </p>
-          <div className="flex items-center gap-8">
+          <div className="flex items-center flex-wrap gap-6 lg:gap-8">
             <a href="#" className="text-white/35 hover:text-white/60 transition-colors" style={{ fontSize: '15px' }}>
               Terms &amp; Conditions
             </a>

@@ -124,6 +124,33 @@ body {
   transition: transform 1.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
+/* Banner helmet — vùng bắt hover cắt theo silhouette cái mũ (trích từ alpha của PNG),
+   để chuột phải vào đúng hình mũ mới kích hoạt hiệu ứng thay vì cả khung chữ nhật */
+.helmet-hit {
+  clip-path: polygon(52.2% 17.5%, 61.8% 20.9%, 65.6% 24.3%, 67.7% 27.7%, 69% 31.1%, 70.8% 34.5%, 72.2% 37.9%, 73.4% 41.3%, 73.6% 44.7%, 72.9% 48.1%, 71.7% 51.5%, 70% 54.9%, 67.7% 58.3%, 65.1% 61.7%, 62.1% 65.1%, 58.8% 68.5%, 55.5% 71.9%, 52.8% 75.3%, 50.7% 78.7%, 47.8% 82.1%, 39.8% 85.5%, 37.9% 85.5%, 30.2% 82.1%, 28% 78.7%, 27.4% 75.3%, 28% 71.9%, 29.4% 68.5%, 30.6% 65.1%, 31.6% 61.7%, 31.5% 58.3%, 31.8% 54.9%, 31.5% 51.5%, 31.2% 48.1%, 31% 44.7%, 31.2% 41.3%, 31.8% 37.9%, 32.9% 34.5%, 34.3% 31.1%, 36.1% 27.7%, 38.5% 24.3%, 42.3% 20.9%, 51.2% 17.5%);
+}
+
+/* Banner helmet — stroke sáng bám viền alpha của PNG khi hover */
+.helmet-glow {
+  filter: drop-shadow(0 0 0 rgba(255, 255, 255, 0))
+          drop-shadow(0 0 0 rgba(255, 255, 255, 0))
+          drop-shadow(0 0 0 rgba(255, 255, 255, 0))
+          drop-shadow(0 0 0 rgba(255, 255, 255, 0))
+          drop-shadow(0 0 0 rgba(255, 255, 255, 0));
+  transform: scale(1);
+  /* origin đáy để mũ phóng to hướng lên, không tràn xuống dưới bị section cắt */
+  transform-origin: center bottom;
+  transition: filter 0.4s ease, transform 0.4s ease;
+}
+.helmet-hit:hover + .helmet-glow {
+  transform: scale(1.04);
+  filter: drop-shadow(1.5px 0 0 rgba(255, 255, 255, 0.85))
+          drop-shadow(-1.5px 0 0 rgba(255, 255, 255, 0.85))
+          drop-shadow(0 1.5px 0 rgba(255, 255, 255, 0.85))
+          drop-shadow(0 -1.5px 0 rgba(255, 255, 255, 0.85))
+          drop-shadow(0 0 18px rgba(255, 255, 255, 0.4));
+}
+
 /* Product card image zoom */
 .product-card:hover .product-img {
   transform: scale(1.04);
