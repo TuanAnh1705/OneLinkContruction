@@ -7,7 +7,6 @@ const navLinks = [
   { label: 'Services', href: '#services' },
   { label: 'Products', href: '#featured-products' },
   { label: 'Why OLCO', href: '#why-olco' },
-  { label: 'Contact', href: '#contact' },
 ]
 
 export default function Navbar() {
