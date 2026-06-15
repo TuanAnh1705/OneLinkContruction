@@ -148,13 +148,14 @@ export default function HeroSection() {
 
         <div className="mt-5 md:mt-0 md:translate-y-30 grid grid-cols-2 gap-2 md:flex md:flex-wrap md:gap-3 md:justify-center" id="products">
           {categories.map((cat) => (
-            <button
+            <a
               key={cat}
-              className="text-white text-[13px] md:text-[18px] px-4 md:px-6 py-2.5 md:py-3 rounded-lg md:rounded-xl cursor-pointer transition-all duration-200 hover:opacity-80"
+              href="#contact"
+              className="text-white text-[13px] md:text-[18px] px-4 md:px-6 py-2.5 md:py-3 rounded-lg md:rounded-xl cursor-pointer transition-all duration-200 hover:opacity-80 text-center no-underline"
               style={{ background: 'rgba(58,58,58,0.5)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)' }}
             >
               {cat}
-            </button>
+            </a>
           ))}
         </div>
       </div>
