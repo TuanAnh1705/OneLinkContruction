@@ -3,7 +3,12 @@
 import Image from 'next/image'
 import { useEffect, useRef, useState } from 'react'
 
-const navLinks = ['Services', 'Products', 'Why OLCO', 'Contact']
+const navLinks = [
+  { label: 'Services', href: '#services' },
+  { label: 'Products', href: '#featured-products' },
+  { label: 'Why OLCO', href: '#why-olco' },
+  { label: 'Contact', href: '#contact' },
+]
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false)
@@ -11,6 +16,7 @@ export default function Navbar() {
   const [isClosing, setIsClosing] = useState(false)
   const [hoveredLink, setHoveredLink] = useState<string | null>(null)
   const [logoOnLight, setLogoOnLight] = useState(false)
+  const [buildHovered, setBuildHovered] = useState(false)
 
   // Ref để scroll handler luôn thấy giá trị menuOpen mới nhất
   const menuOpenRef = useRef(false)
@@ -123,19 +129,19 @@ export default function Navbar() {
               >
                 {navLinks.map((link) => (
                   <a
-                    key={link}
-                    href={`#${link.toLowerCase().replace(/\s/g, '-')}`}
+                    key={link.label}
+                    href={link.href}
                     className="text-[15px] font-medium text-[#FFFFFF]"
-                    onMouseEnter={() => setHoveredLink(link)}
+                    onMouseEnter={() => setHoveredLink(link.label)}
                     onMouseLeave={() => setHoveredLink(null)}
                     style={{
                       whiteSpace: 'nowrap',
                       // Hover từng link giống dropdown: link đang hover giữ rõ, các link còn lại mờ đi
-                      opacity: hoveredLink === null || hoveredLink === link ? 1 : 0.7,
+                      opacity: hoveredLink === null || hoveredLink === link.label ? 1 : 0.7,
                       transition: 'opacity 0.15s ease',
                     }}
                   >
-                    {link}
+                    {link.label}
                   </a>
                 ))}
               </div>
@@ -228,10 +234,10 @@ export default function Navbar() {
                 <div style={{ padding: '4px 0 2px' }}>
                   {navLinks.map((link) => (
                     <a
-                      key={link}
-                      href={`#${link.toLowerCase().replace(/\s/g, '-')}`}
+                      key={link.label}
+                      href={link.href}
                       onClick={closeMenu}
-                      onMouseEnter={() => setHoveredLink(link)}
+                      onMouseEnter={() => setHoveredLink(link.label)}
                       onMouseLeave={() => setHoveredLink(null)}
                       style={{
                         display: 'block',
@@ -239,12 +245,12 @@ export default function Navbar() {
                         fontSize: '16px',
                         fontWeight: 500,
                         color: 'white',
-                        opacity: hoveredLink === null || hoveredLink === link ? 1 : 0.7,
+                        opacity: hoveredLink === null || hoveredLink === link.label ? 1 : 0.7,
                         transition: 'opacity 0.15s ease',
                         textDecoration: 'none',
                       }}
                     >
-                      {link}
+                      {link.label}
                     </a>
                   ))}
                 </div>
@@ -255,15 +261,24 @@ export default function Navbar() {
           {/* Build With Us */}
           <a
             href="#contact"
-            className="btn-build shrink-0 flex items-center font-semibold"
+            className="shrink-0 flex items-center font-semibold"
+            onMouseEnter={() => setBuildHovered(true)}
+            onMouseLeave={() => setBuildHovered(false)}
             style={{
               padding: '10px 20px',
               borderRadius: '8px',
               fontSize: '15px',
               whiteSpace: 'nowrap',
-              background: logoOnLight ? '#1a1a1a' : '#F4F4F4',
-              color: logoOnLight ? '#ffffff' : '#3A3A3A',
-              transition: 'background 0.3s ease, color 0.3s ease',
+              backgroundColor: buildHovered
+                ? (logoOnLight ? '#F4F4F4' : '#3A3A3A')
+                : (logoOnLight ? '#1a1a1a' : '#F4F4F4'),
+              color: buildHovered
+                ? (logoOnLight ? '#3A3A3A' : '#F4F4F4')
+                : (logoOnLight ? '#ffffff' : '#3A3A3A'),
+              border: `1.5px solid ${buildHovered
+                ? (logoOnLight ? '#3A3A3A' : '#F4F4F4')
+                : 'transparent'}`,
+              transition: 'background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease',
             }}
           >
             Build With Us
@@ -272,20 +287,21 @@ export default function Navbar() {
 
         {/* Mobile hamburger — 3 gạch gradient, nền trắng/đen đổi theo màu nền section */}
         <button
-          className="lg:hidden ml-auto flex flex-col items-center justify-center gap-1.5 rounded-xl"
+          className="lg:hidden ml-auto flex flex-col items-center justify-center gap-1.5"
           aria-label="Menu"
           onClick={() => menuOpen ? closeMenu() : openMenu()}
           style={{
-            width: 48,
-            height: 48,
+            width: 44,
+            height: 44,
+            borderRadius: 10,
             background: logoOnLight ? '#0a0b10' : '#FFFFFF',
-            boxShadow: '0 2px 12px rgba(0,0,0,0.18)',
-            transition: 'background 0.3s ease',
+            border: `1.5px solid ${logoOnLight ? '#0a0b10' : '#FFFFFF'}`,
+            transition: 'background 0.3s ease, border-color 0.3s ease',
           }}
         >
-          <span className="block w-6 h-0.5 rounded-full" style={{ background: 'linear-gradient(90deg, #66A3FF, #99C2FF)' }} />
-          <span className="block w-4 h-0.5 rounded-full" style={{ background: 'linear-gradient(90deg, #66A3FF, #99C2FF)' }} />
-          <span className="block w-6 h-0.5 rounded-full" style={{ background: 'linear-gradient(90deg, #66A3FF, #99C2FF)' }} />
+          <span className="block w-5 h-0.5 rounded-full" style={{ background: logoOnLight ? '#FFFFFF' : '#0a0b10', transition: 'background 0.3s ease' }} />
+          <span className="block w-3.5 h-0.5 rounded-full" style={{ background: logoOnLight ? '#FFFFFF' : '#0a0b10', transition: 'background 0.3s ease' }} />
+          <span className="block w-5 h-0.5 rounded-full" style={{ background: logoOnLight ? '#FFFFFF' : '#0a0b10', transition: 'background 0.3s ease' }} />
         </button>
       </div>
 
@@ -335,8 +351,8 @@ export default function Navbar() {
           <div className="flex flex-col" style={{ padding: '8px 24px' }}>
             {navLinks.map((link) => (
               <a
-                key={link}
-                href={`#${link.toLowerCase().replace(/\s/g, '-')}`}
+                key={link.label}
+                href={link.href}
                 onClick={closeMenu}
                 style={{
                   display: 'block',
@@ -348,7 +364,7 @@ export default function Navbar() {
                   borderBottom: '1px solid rgba(255,255,255,0.06)',
                 }}
               >
-                {link}
+                {link.label}
               </a>
             ))}
           </div>

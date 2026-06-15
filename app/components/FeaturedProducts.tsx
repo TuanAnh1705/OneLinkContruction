@@ -187,6 +187,7 @@ export default function FeaturedProducts() {
       // -mt-6: kéo cả khối từ đây xuống Footer lên 24px cho sát với ProductsSection.
       // Mobile kéo thêm 20px (-mt-11 = 44px) vì ProductsSection dùng -translate-y-5
       // (chỉ dịch hình, không dịch layout) nên để lại khe ~20px phía trên ở mobile.
+      id="featured-products"
       className="relative w-full py-10 md:py-24 -mt-30 md:-mt-6 bg-white"
       aria-label="Featured Products"
       data-navbar-theme="light"

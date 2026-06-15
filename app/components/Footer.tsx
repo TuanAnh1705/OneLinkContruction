@@ -1,3 +1,5 @@
+'use client'
+
 import Image from 'next/image'
 
 export default function Footer() {
@@ -62,14 +64,20 @@ export default function Footer() {
         </div>
 
 {/* Logo */}
-        <Image
-          src="/Layer_1.svg"
-          alt="OLCO"
-          width={355}
-          height={355}
-          className="mb-10 lg:mb-12"
-          style={{ height: 'clamp(60px, 10vw, 150px)', width: 'auto' }}
-        />
+        <a
+          href="#top"
+          aria-label="Back to top"
+          className="inline-block mb-10 lg:mb-12"
+          onClick={(e) => { e.preventDefault(); (window as any).__lenis?.scrollTo(0, { duration: 1.2 }) }}
+        >
+          <Image
+            src="/Layer_1.svg"
+            alt="OLCO"
+            width={355}
+            height={355}
+            style={{ height: 'clamp(60px, 10vw, 150px)', width: 'auto' }}
+          />
+        </a>
         {/* Bottom bar */}
         <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between border-t border-white/10 lg:border-t-0 pt-6 lg:pt-5 pb-5 gap-3 lg:gap-4">
           <p className="text-white/35" style={{ fontSize: '15px' }}>

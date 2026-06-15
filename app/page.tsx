@@ -9,6 +9,7 @@ import FeaturesSection from './components/FeaturesSection'
 import StatsSection from './components/StatsSection'
 import ContactSection from './components/ContactSection'
 import Footer from './components/Footer'
+import BackToTopButton from './components/BackToTopButton'
 
 export default function Home() {
   return (
@@ -24,6 +25,7 @@ export default function Home() {
       <StatsSection />
       <ContactSection />
       <Footer />
+      <BackToTopButton />
     </main>
   )
 }

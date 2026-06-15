@@ -12,11 +12,6 @@ interface ContactButtonProps {
   as?: 'a' | 'button'
 }
 
-const FONT_SIZE = 18
-const LINE_H = 24
-const EASE = 'cubic-bezier(0.76, 0, 0.24, 1)'
-const TRANSITION = `transform 0.4s ${EASE}`
-
 export default function ContactButton({
   label = 'Contact Us',
   href = '#contact',
@@ -27,47 +22,46 @@ export default function ContactButton({
 }: ContactButtonProps) {
   const [hovered, setHovered] = useState(false)
 
+  const isLight = backgroundColor === '#F4F4F4'
+  const hoverBg = isLight ? '#3A3A3A' : '#F4F4F4'
+  const hoverTextColor = isLight ? '#F4F4F4' : '#3A3A3A'
+  const hoverBorderColor = isLight ? '#F4F4F4' : '#3A3A3A'
+  const hoverIconSrc = isLight ? '/Group.svg' : '/Group2.svg'
+
   const sharedStyle: React.CSSProperties = {
     display: 'inline-flex',
     alignItems: 'center',
-    gap: 16,
-    borderRadius: 10,
-    padding: '14px 22px',
-    backgroundColor,
+    gap: 12,
+    borderRadius: 8,
+    padding: '10px 20px',
+    backgroundColor: hovered ? hoverBg : backgroundColor,
+    border: `1.5px solid ${hovered ? hoverBorderColor : 'transparent'}`,
     textDecoration: 'none',
-    border: 'none',
     cursor: 'pointer',
     userSelect: 'none',
-  }
-
-  const spanBase: React.CSSProperties = {
-    display: 'block',
-    fontSize: FONT_SIZE,
-    fontWeight: 600,
-    lineHeight: `${LINE_H}px`,
-    whiteSpace: 'nowrap',
-    color: textColor,
-    transition: TRANSITION,
+    transition: 'background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease',
   }
 
   const inner = (
     <>
-      <div style={{ position: 'relative', overflow: 'hidden', height: LINE_H }}>
-        {/* rolls up on hover */}
-        <span style={{ ...spanBase, transform: hovered ? 'translateY(-100%)' : 'translateY(0%)' }}>
-          {label}
-        </span>
-        {/* enters from bottom on hover */}
-        <span style={{ ...spanBase, position: 'absolute', top: 0, left: 0, transform: hovered ? 'translateY(0%)' : 'translateY(100%)' }}>
-          {label}
-        </span>
-      </div>
+      <span
+        style={{
+          fontSize: 15,
+          fontWeight: 600,
+          lineHeight: '20px',
+          whiteSpace: 'nowrap',
+          color: hovered ? hoverTextColor : textColor,
+          transition: 'color 0.3s ease',
+        }}
+      >
+        {label}
+      </span>
 
       <Image
-        src="/Group1.svg"
+        src={hovered ? hoverIconSrc : '/Group1.svg'}
         alt=""
-        width={28}
-        height={28}
+        width={20}
+        height={20}
         aria-hidden={true}
         style={{ display: 'block', flexShrink: 0 }}
       />

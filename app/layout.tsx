@@ -14,6 +14,7 @@ export const metadata: Metadata = {
   description:
     'ASNZ compliant and high-quality materials direct from factories in Asia. Precision sourcing for builders, contractors and developers.',
   keywords: ['OLCO', 'building materials', 'factory direct', 'ASNZ compliant', 'construction supply'],
+  icons: { icon: '/Frame 65.svg' },
 }
 
 export default function RootLayout({

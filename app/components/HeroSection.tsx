@@ -1,7 +1,7 @@
 'use client'
 
 import Image from 'next/image'
-import { useEffect, useRef } from 'react'
+import { useRef } from 'react'
 import ContactButton from './ContactButton'
 
 const categories = [
@@ -15,20 +15,34 @@ const categories = [
 
 export default function HeroSection() {
   const sectionRef = useRef<HTMLElement>(null)
+  const spotlightRef = useRef<HTMLDivElement>(null)
 
-  // Dừng animation sóng khi hero không còn trong viewport
-  useEffect(() => {
-    const el = sectionRef.current
-    if (!el) return
-    const io = new IntersectionObserver(([entry]) => {
-      el.classList.toggle('waves-paused', !entry.isIntersecting)
-    })
-    io.observe(el)
-    return () => io.disconnect()
-  }, [])
+  const handleMouseMove = (e: React.MouseEvent<HTMLElement>) => {
+    const rect = sectionRef.current?.getBoundingClientRect()
+    if (!rect || !spotlightRef.current) return
+    const x = ((e.clientX - rect.left) / rect.width) * 100
+    const y = ((e.clientY - rect.top) / rect.height) * 100
+    const mask = `radial-gradient(circle 340px at ${x}% ${y}%, black 0%, black 25%, transparent 100%)`
+    const el = spotlightRef.current
+    el.style.transition = 'none'
+    el.style.opacity = '1'
+    el.style.maskImage = mask
+    el.style.webkitMaskImage = mask
+  }
+
+  const handleMouseLeave = () => {
+    if (!spotlightRef.current) return
+    spotlightRef.current.style.transition = 'opacity 0.3s ease'
+    spotlightRef.current.style.opacity = '0'
+  }
 
   return (
-    <section ref={sectionRef} className="relative w-full overflow-hidden bg-white min-h-[110vh] lg:min-h-[170vh]">
+    <section
+      ref={sectionRef}
+      className="relative w-full overflow-hidden bg-white min-h-[130vh] lg:min-h-[170vh]"
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+    >
       {/* Logo — pin cố định trong hero, scroll đi cùng section (không fixed).
           Căn lề theo đúng container của Navbar để thẳng hàng với cụm menu bên phải */}
       <div className="absolute inset-x-0 top-0 z-20 pointer-events-none">
@@ -60,24 +74,34 @@ export default function HeroSection() {
         {/* Fade sang trắng — phải đạt trắng 100% trước mép dưới section (mốc 85%),
             nếu không sẽ lộ đường line cắt cứng ở ranh giới với section kế tiếp */}
         <div
-          className="absolute inset-x-0 bottom-0 top-[55%] lg:top-[70%]"
+          className="absolute inset-x-0 bottom-0 top-[80%] lg:top-[70%]"
           style={{ background: 'linear-gradient(to bottom, rgba(255,255,255,0) 0%, #ffffff 85%)' }}
         />
       </div>
 
       {/* Vùng cuối hero đã fade sang trắng — báo cho Navbar đổi logo sang màu tối,
           nếu không logo trắng sẽ tàng hình trên nền trắng khi scroll qua đoạn này */}
-      <div data-navbar-theme="light" aria-hidden className="absolute inset-x-0 bottom-0 pointer-events-none" style={{ top: '72%' }} />
+      <div data-navbar-theme="light" aria-hidden className="absolute inset-x-0 bottom-0 pointer-events-none" style={{ top: '78%' }} />
 
-      {[0, 2.5].map((delay) => (
-        <div
-          key={delay}
-          className="isolation-wave-container"
-          style={{ zIndex: 1, animationDelay: `${delay}s`, opacity: 0.65 }}
-        >
-          <Image src="/Isolation_Mode.svg" alt="" fill className="object-cover object-center" />
-        </div>
-      ))}
+      {/* Ambient — mờ nhẹ, luôn hiện */}
+      <div className="absolute inset-0 pointer-events-none" style={{ zIndex: 1, opacity: 0.15 }}>
+        <Image src="/Isolation_Mode.svg" alt="" fill className="object-cover object-center" />
+      </div>
+
+      {/* Spotlight — theo chuột, GPU-accelerated */}
+      <div
+        ref={spotlightRef}
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          zIndex: 1,
+          opacity: 0,
+          transform: 'translateZ(0)',
+          willChange: 'mask-image, opacity',
+          filter: 'brightness(20)',
+        }}
+      >
+        <Image src="/Isolation_Mode.svg" alt="" fill className="object-cover object-center" />
+      </div>
 
       <div className="absolute inset-0 z-2 pointer-events-none overflow-hidden">
         <ContourLines />
