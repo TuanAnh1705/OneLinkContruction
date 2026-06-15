@@ -10,10 +10,17 @@ const epilogue = Epilogue({
 })
 
 export const metadata: Metadata = {
-  title: 'OLCO — Factory-Direct Building Materials',
+  title: 'OLCO | Factory-Direct AS/NZS Compliant Building Materials',
   description:
-    'ASNZ compliant and high-quality materials direct from factories in Asia. Precision sourcing for builders, contractors and developers.',
-  keywords: ['OLCO', 'building materials', 'factory direct', 'ASNZ compliant', 'construction supply'],
+    'Import certified building materials directly from audited Asian factories with OLCO. On-site QC in Vietnam & China guarantees strict AS/NZS compliance.',
+  keywords: [
+    'factory direct building materials asia',
+    'audited asian factories',
+    'wholesale construction supplies',
+    'b2b sourcing china vietnam',
+    'commercial cabinetry sourcing',
+    'certified building products',
+  ],
   icons: { icon: '/Frame 65.svg' },
 }
 
