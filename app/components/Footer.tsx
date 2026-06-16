@@ -23,18 +23,18 @@ export default function Footer() {
             </h4>
             <div className="space-y-4">
               <a
-                href="mailto:hello@olco.build"
+                href="mailto:info@onelinkconstruction.com"
                 className="block text-white/50 hover:text-white transition-colors"
                 style={{ fontSize: '18px' }}
               >
-                hello@olco.build
+                info@onelinkconstruction.com
               </a>
               <a
-                href="tel:+61020000000"
+                href="tel:+61448146052"
                 className="block text-white/50 hover:text-white transition-colors"
                 style={{ fontSize: '18px' }}
               >
-                +61 (0)2 0000 0000
+                +61 448 146 052
               </a>
             </div>
           </div>
@@ -68,6 +68,7 @@ export default function Footer() {
           href="#top"
           aria-label="Back to top"
           className="inline-block mb-10 lg:mb-12"
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           onClick={(e) => { e.preventDefault(); (window as any).__lenis?.scrollTo(0, { duration: 1.2 }) }}
         >
           <Image

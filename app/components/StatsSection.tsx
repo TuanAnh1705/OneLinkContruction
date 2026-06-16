@@ -127,7 +127,7 @@ function ScrambleText({ text }: { text: string }) {
 export default function StatsSection() {
   return (
     <section
-      className="relative w-full bg-[#3A3A3A] md:-mt-40"
+      className="relative w-full bg-[#3A3A3A] md:-mt-40 lg:mt-0"
       // Shadow cùng màu nền tràn 2px — che khe hở sub-pixel (line trắng) quanh section ở DPR lẻ
       style={{ padding: '80px 0 120px', boxShadow: '0 0 0 2px #3A3A3A' }}
     >

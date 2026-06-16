@@ -69,7 +69,7 @@ export default function HeroSection() {
           fill
           priority
           quality={95}
-          className="object-cover object-top"
+          className="object-cover object-[58%_top] lg:object-top"
         />
         {/* Fade sang trắng — phải đạt trắng 100% trước mép dưới section (mốc 85%),
             nếu không sẽ lộ đường line cắt cứng ở ranh giới với section kế tiếp */}
@@ -115,7 +115,7 @@ export default function HeroSection() {
           <div className="col-span-12 lg:col-span-10">
             <h1
               className="font-normal leading-[1.05] tracking-[-0.03em] text-white text-center lg:text-left"
-              style={{ fontSize: 'clamp(34px, 5vw, 77px)', maxWidth: '1500px' }}
+              style={{ fontSize: 'clamp(30px, 5vw, 60px)', maxWidth: '1500px' }}
             >
               AS/NZS-Compliant Construction Materials, <br className="hidden lg:block" /> Sourced Directly from Asia
             </h1>
@@ -142,7 +142,7 @@ export default function HeroSection() {
           <div
             className="flex items-center justify-center gap-3 cursor-default text-[#F4F4F4] text-[14px] md:text-[18px] font-medium px-5 md:px-8 py-3 md:py-3.5 rounded-lg text-center border border-[#F4F4F4]"
           >
-            Download Our Product Catalogues Here
+            Contact Us to Explore Full Catalogues
           </div>
         </div>
 
