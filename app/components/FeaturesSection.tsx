@@ -67,10 +67,15 @@ export default function FeaturesSection() {
           scrollTrigger: {
             trigger: sectionRef.current,
             start: 'top top',
-            end: `+=${window.innerHeight * 0.8}`,
+            // Quãng cuộn dài hơn → dãy chữ trượt chậm & mượt hơn (ít dịch chuyển mỗi pixel cuộn)
+            end: `+=${window.innerHeight * 1.4}`,
             pin: true,
-            scrub: 1,
-            anticipatePin: 1,
+            // scrub cao hơn = catch-up mượt hơn, giảm cảm giác giật khi cuộn
+            scrub: 1.5,
+            // Không dùng anticipatePin: với smooth-scroll (Lenis) nó dự đoán theo vận tốc đã được
+            // làm mượt nên hay "đoán hụt" → gây khựng đúng lúc bắt đầu pin. Pin đúng điểm sẽ mượt hơn.
+            pinSpacing: true,
+            invalidateOnRefresh: true,
           },
         })
 
