@@ -54,53 +54,31 @@ export default function FeaturesSection() {
         const slots = slotRefs.current.filter((el): el is HTMLDivElement => el !== null)
         if (!icon || !track || slots.length !== SLOT_COUNT) return
 
-        // 180° băm đều cho 5 slot — mỗi slot icon quay thêm 36°
-        const ROTATION_STEP = 180 / SLOT_COUNT
+        const first = slots[0]
+        const last = slots[slots.length - 1]
 
-        // Căn track sao cho slot đang active luôn nằm giữa cột phải
-        // (track là offsetParent của các slot nhờ position: relative)
-        const baseY = track.offsetHeight / 2 - (slots[0].offsetTop + slots[0].offsetHeight / 2)
-        gsap.set(track, { y: baseY })
-
-        // Khởi tạo: mọi slot đều ẩn (opacity: 0) và tụt xuống 120px
-        gsap.set(slots, { opacity: 0, y: 120 })
+        // Bắt đầu: slot ĐẦU nằm giữa cột phải (track là offsetParent của các slot)
+        const startY = track.offsetHeight / 2 - (first.offsetTop + first.offsetHeight / 2)
+        // Kết thúc: slot CUỐI nằm giữa cột phải
+        const endY = startY - (last.offsetTop - first.offsetTop)
+        gsap.set(track, { y: startY })
 
         const tl = gsap.timeline({
           scrollTrigger: {
             trigger: sectionRef.current,
             start: 'top top',
-            end: `+=${window.innerHeight * 2.5}`,
+            end: `+=${window.innerHeight * 0.8}`,
             pin: true,
             scrub: 1,
             anticipatePin: 1,
           },
         })
 
-        slots.forEach((slot, i) => {
-          const label = `phase${i + 1}`
-
-          // Mỗi nhịp: icon quay thêm 36° (nhịp cuối chạm đúng 180°)
-          tl.addLabel(label, i === 0 ? 0 : '+=0.4')
-            .to(icon, { rotation: ROTATION_STEP * (i + 1), duration: 1, ease: 'none' }, label)
-
-          if (i === 0) {
-            // Slot 1 tĩnh tại, vừa FADE IN vừa FLOAT lên đúng vị trí gốc (y: 0)
-            tl.to(slot, { opacity: 1, y: 0, duration: 1, ease: 'power2.out' }, label)
-          } else {
-            // Track trượt lên, đưa slot kế tiếp vào đúng vị trí giữa
-            tl.to(
-              track,
-              {
-                y: baseY - (slot.offsetTop - slots[0].offsetTop),
-                duration: 1,
-                ease: 'power2.inOut',
-              },
-              label
-            )
-              // Slot nối đuôi: vừa FADE IN vừa FLOAT lên trong lúc track đang trượt
-              .to(slot, { opacity: 1, y: 0, duration: 0.8, ease: 'power2.out' }, `${label}+=0.2`)
-          }
-        })
+        // Cả DÃY chữ luôn hiển thị và trượt lên liên tục như 1 khối,
+        // đồng bộ tuyến tính với icon quay 0 → 180°.
+        // Cuộn hết quãng = icon đủ 180° + slot cuối vào giữa → nhả pin (và ngược lại).
+        tl.to(track, { y: endY, ease: 'none' }, 0)
+          .to(icon, { rotation: 180, ease: 'none' }, 0)
       })
     },
     { scope: sectionRef }

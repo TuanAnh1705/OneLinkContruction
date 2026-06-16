@@ -21,8 +21,11 @@ export default function Home() {
       <SupplyTiers />
       <SourcingSection />
       <BannerSection />
-      <FeaturesSection />
-      <StatsSection />
+      {/* Nền tối phủ sau cụm pin — chặn khe hở sub-pixel lộ nền trắng (giật trắng khi scroll) */}
+      <div className="bg-[#3A3A3A]">
+        <FeaturesSection />
+        <StatsSection />
+      </div>
       <ContactSection />
       <Footer />
       <BackToTopButton />
