@@ -9,9 +9,9 @@ import { useGSAP } from '@gsap/react'
 gsap.registerPlugin(ScrollTrigger)
 
 const badges = [
-  'Free detailed written quotes',
-  'Pre-shipment QA on every order',
-  'Aligned to AS/NZS and NCC requirements',
+  'Australian support team',
+  'Quality control at every stage',
+  'AS/NZ compliant',
 ]
 
 export default function BannerSection() {
@@ -95,7 +95,7 @@ export default function BannerSection() {
             className="hidden lg:block absolute z-20"
             style={{ left: '223px', top: '219px' }}
           >
-            <BadgeButton label="Free detailed written quotes" noSlide/>
+            <BadgeButton label="Australian support team" noSlide/>
           </div>
 
           {/* Badge right top */}
@@ -103,15 +103,15 @@ export default function BannerSection() {
             className="hidden lg:block absolute z-20"
             style={{ right: '200px', top: '126px' }}
           >
-            <BadgeButton label="Pre-shipment QA on every order" noSlide />
+            <BadgeButton label="Quality control at every stage" noSlide />
           </div>
 
           {/* Badge right bottom */}
           <div
             className="hidden lg:block absolute z-20"
-            style={{ right: '228px', bottom: '120px' }}
+            style={{ right: '318px', bottom: '120px' }}
           >
-            <BadgeButton label="Aligned to AS/NZS and NCC requirements" noSlide />
+            <BadgeButton label="AS/NZ compliant" noSlide />
           </div>
 
           {/* Badges mobile — cụm bên phải helmet, hơi đè lên helmet, xếp so le như thiết kế */}

@@ -118,15 +118,15 @@ export default function FeaturesSection() {
         <div className="col-span-12 lg:col-span-6">
           <div ref={trackRef} className="relative" style={{ willChange: 'transform' }}>
             {FEATURES.map((feature, i) => (
-              <div key={feature.title}>
-                {i > 0 && <div style={{ height: `${SPACER}px` }} />}
+              <div key={feature.title} className={i > 0 ? 'mt-7 lg:mt-0' : undefined}>
+                {i > 0 && <div className="hidden lg:block" style={{ height: `${SPACER}px` }} />}
                 <div
                   ref={(el) => {
                     slotRefs.current[i] = el
                   }}
                 >
                   <h3
-                    className="font-medium text-white mb-4"
+                    className="font-medium text-white md:mb-4"
                     style={{ fontSize: 'clamp(24px, 2.3vw, 40px)' }}
                   >
                     {feature.title}
@@ -141,11 +141,12 @@ export default function FeaturesSection() {
               </div>
             ))}
 
-            {/* Spacer */}
-            <div style={{ height: `${SPACER}px` }} />
+            {/* Spacer — chỉ hiện ở desktop */}
+            <div className="hidden lg:block" style={{ height: `${SPACER}px` }} />
 
             {/* Slot 5 — CTA */}
             <div
+              className="mt-10 lg:mt-0"
               ref={(el) => {
                 slotRefs.current[FEATURES.length] = el
               }}

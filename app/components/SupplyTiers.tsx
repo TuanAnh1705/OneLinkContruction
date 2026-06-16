@@ -12,16 +12,16 @@ interface SupplyTier {
 
 const supplyTiers: SupplyTier[] = [
   {
-    title: 'Builder & Renovator',
-    body: 'Order directly from our ready-to-ship catalogue without opening a corporate account. Standard factory-direct pricing, transparent quotes and flexible delivery for single-project needs.',
+    title: 'Builders & Renovators',
+    body: 'Perfect for homeowners, owner-builders, renovators, and small construction projects. Access factory-direct, AS/NZS-compliant materials with transparent pricing, expert guidance, and end-to-end support.',
   },
   {
-    title: 'Commercial Contractor',
-    body: 'Optimise your project budget with tiered wholesale pricing and volume-based discounts. Includes full compliance documentation and scheduled site delivery so materials arrive exactly when needed.',
+    title: 'Architects & Contractors',
+    body: 'Supporting residential and commercial projects with direct access to trusted manufacturers across Asia. Reduce procurement costs, expand product choice, and source compliant materials with confidence.',
   },
   {
-    title: 'Developer & Enterprise Partnership',
-    body: 'End-to-end support for multi-stage developments — custom factory production to your exact specifications, consolidated freight, on-site QA and a dedicated OLCO account manager. Partners benefit from priority production slots, flexible payment terms and a single point of accountability across every shipment.',
+    title: 'Developers & Procurement Teams',
+    body: 'Helping developers and procurement professionals streamline material sourcing across single and multi-stage projects. Access trusted factory networks, quality-controlled supply, and dedicated project support from specification through to delivery.',
   },
 ];
 
@@ -60,16 +60,16 @@ export default function SupplyTiers() {
             {/* Header */}
             <h2
               className="text-white font-medium tracking-tight"
-              style={{ fontSize: 'clamp(36px, 4.5vw, 64px)', maxWidth: '680px' }}
+              style={{ fontSize: 'clamp(36px, 4.5vw, 64px)', maxWidth: '980px' }}
             >
-              Built for Every Scale
+              Built for Projects of Every Scale
             </h2>
             <p
               className="text-[#F4F4F4] mt-5"
-              style={{ fontSize: 'clamp(14px, 1vw, 18px)', maxWidth: '980px' }}
+              style={{ fontSize: 'clamp(14px, 1vw, 18px)', maxWidth: '1500px' }}
             >
-              From boutique fit-outs to national developments. Pick the supply tier that matches your
-              project volume.
+              Access the same factory-direct sourcing networks and manufacturing capabilities
+              traditionally reserved for large developers.
             </p>
 
             {/* Tier cards */}

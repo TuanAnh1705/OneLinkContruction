@@ -117,7 +117,7 @@ export default function HeroSection() {
               className="font-normal leading-[1.05] tracking-[-0.03em] text-white text-center lg:text-left"
               style={{ fontSize: 'clamp(34px, 5vw, 77px)', maxWidth: '1500px' }}
             >
-              AS/NZ compliant materials, <br className="hidden lg:block" /> sourced directly from Asia
+              AS/NZS-Compliant Construction Materials, <br className="hidden lg:block" /> Sourced Directly from Asia
             </h1>
           </div>
 
@@ -128,7 +128,7 @@ export default function HeroSection() {
                 className="font-normal leading-relaxed text-white text-center lg:text-right"
                 style={{ fontSize: 'clamp(14px, 0.95vw, 16px)' }}
               >
-                Access high-quality, compliant materials through OLCO’s factory network. Reduce costs while unlocking a wider range of products, finishes, and custom manufacturing solutions.
+                Access trusted manufacturers across Asia through OLCO&apos;s factory-direct procurement network. Reduce project costs, expand product choice, and source with confidence.
               </p>
 
               <div className="mt-8">

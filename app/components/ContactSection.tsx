@@ -35,7 +35,7 @@ export default function ContactSection() {
             className="font-medium text-white leading-[1.05] tracking-tight"
             style={{ fontSize: 'clamp(32px, 4.0vw, 82px)', maxWidth: '800px' }}
           >
-            Start your next project at the set-out point.
+            The Smarter Starting Point for Every Project
           </h2>
         </div>
 
@@ -94,7 +94,7 @@ export default function ContactSection() {
             <div className="w-full h-px mt-12 mb-5 bg-[#FFFFFF]/50" />
 
             <p className="text-white/50" style={{ fontSize: '17px' }}>
-              We reply within one business day. Your details stay confidential.
+              Complete the form below and we&apos;ll be in touch as soon as OLCO becomes available to the wider market.
             </p>
           </div>
         </div>
