@@ -24,8 +24,7 @@ export default function Footer() {
             <div className="space-y-4">
               <a
                 href="mailto:info@onelinkconstruction.com"
-                className="block text-white/50 hover:text-white transition-colors"
-                style={{ fontSize: '18px' }}
+                className="block break-words text-white/50 hover:text-white transition-colors text-[15px] lg:text-[18px]"
               >
                 info@onelinkconstruction.com
               </a>
