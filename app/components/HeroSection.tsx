@@ -3,6 +3,7 @@
 import Image from 'next/image'
 import { useRef } from 'react'
 import ContactButton from './ContactButton'
+import useIsMobile from './useIsMobile'
 
 const categories = [
   'Cabinetry',
@@ -16,6 +17,7 @@ const categories = [
 export default function HeroSection() {
   const sectionRef = useRef<HTMLElement>(null)
   const spotlightRef = useRef<HTMLDivElement>(null)
+  const isMobile = useIsMobile()
 
   const handleMouseMove = (e: React.MouseEvent<HTMLElement>) => {
     const rect = sectionRef.current?.getBoundingClientRect()
@@ -40,8 +42,8 @@ export default function HeroSection() {
     <section
       ref={sectionRef}
       className="relative w-full overflow-hidden bg-white min-h-[130vh] lg:min-h-[170vh]"
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
+      onMouseMove={isMobile ? undefined : handleMouseMove}
+      onMouseLeave={isMobile ? undefined : handleMouseLeave}
     >
       {/* Logo — pin cố định trong hero, scroll đi cùng section (không fixed).
           Căn lề theo đúng container của Navbar để thẳng hàng với cụm menu bên phải */}
@@ -88,20 +90,22 @@ export default function HeroSection() {
         <Image src="/Isolation_Mode.svg" alt="" fill className="object-cover object-center" />
       </div>
 
-      {/* Spotlight — theo chuột, GPU-accelerated */}
-      <div
-        ref={spotlightRef}
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          zIndex: 1,
-          opacity: 0,
-          transform: 'translateZ(0)',
-          willChange: 'mask-image, opacity',
-          filter: 'brightness(20)',
-        }}
-      >
-        <Image src="/Isolation_Mode.svg" alt="" fill className="object-cover object-center" />
-      </div>
+      {/* Spotlight — theo chuột, GPU-accelerated. Chỉ desktop; mobile chỉ giữ ảnh ambient tĩnh */}
+      {!isMobile && (
+        <div
+          ref={spotlightRef}
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            zIndex: 1,
+            opacity: 0,
+            transform: 'translateZ(0)',
+            willChange: 'mask-image, opacity',
+            filter: 'brightness(20)',
+          }}
+        >
+          <Image src="/Isolation_Mode.svg" alt="" fill className="object-cover object-center" />
+        </div>
+      )}
 
       <div className="absolute inset-0 z-2 pointer-events-none overflow-hidden">
         <ContourLines />

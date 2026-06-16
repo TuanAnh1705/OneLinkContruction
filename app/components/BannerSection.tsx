@@ -51,7 +51,7 @@ export default function BannerSection() {
   return (
     <section
       ref={sectionRef}
-      className="relative w-full overflow-hidden bg-[#3A3A3A] lg:min-h-[clamp(500px,33.7vw,647px)]"
+      className="relative w-full overflow-hidden bg-[#3A3A3A] py-16 lg:py-0 lg:min-h-[clamp(500px,33.7vw,647px)]"
       // Phủ màu nền tràn 2px ra mọi phía — che khe hở sub-pixel (line trắng) quanh section ở DPR lẻ
       style={{ boxShadow: '0 0 0 2px #3A3A3A' }}
     >

@@ -51,7 +51,7 @@ export default function SupplyTiers() {
       {/* overflow-hidden removed so card can translate upward past sticky boundary */}
       <div className="lg:sticky lg:top-0 lg:h-screen w-full">
         <motion.div
-          className="w-full lg:h-full bg-[#3A3A3A] overflow-hidden flex flex-col justify-center py-20 lg:py-0 max-lg:transform-none! max-lg:[clip-path:none]!"
+          className="w-full lg:h-full bg-[#3A3A3A] overflow-hidden flex flex-col justify-center py-16 lg:py-0 max-lg:transform-none! max-lg:[clip-path:none]!"
           // Shadow cùng màu nền tràn 2px ra mọi phía — che khe hở sub-pixel (line trắng)
           // quanh section ở DPR lẻ (Windows scaling 125%/150%); desktop bị clip-path cắt nên không ảnh hưởng animation
           style={isMobile ? { boxShadow: '0 0 0 2px #3A3A3A' } : { scale, clipPath }}

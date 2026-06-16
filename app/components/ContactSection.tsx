@@ -27,7 +27,7 @@ export default function ContactSection() {
       </div>
 
       <div
-        className="relative z-10 max-w-8xl mx-auto flex flex-col px-6 pt-20 pb-16 lg:px-36 lg:pt-30 lg:pb-0" // Mobile có padding bottom; desktop cắt bỏ để set margin âm
+        className="relative z-10 max-w-8xl mx-auto flex flex-col px-6 pt-16 pb-16 lg:px-36 lg:pt-30 lg:pb-0" // Mobile có padding bottom; desktop cắt bỏ để set margin âm
       >
         {/* Top — Heading (Được giải phóng width, không bị ép bởi form) */}
         <div className="w-full mb-16">

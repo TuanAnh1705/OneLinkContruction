@@ -87,7 +87,7 @@ export default function FeaturesSection() {
   return (
     <section
       ref={sectionRef}
-      className="relative w-full bg-[#3A3A3A] overflow-hidden flex items-center py-20 lg:py-0 lg:h-screen"
+      className="relative w-full bg-[#3A3A3A] overflow-hidden flex items-center py-16 lg:py-0 lg:h-screen"
       style={{
         // Phủ màu nền tràn 2px ra mọi phía — che khe hở sub-pixel (line trắng) khi ScrollTrigger
         // pin section và quanh section ở DPR lẻ (Windows scaling 125%/150%)

@@ -6,7 +6,7 @@ export default function SourcingSection() {
       // Phủ màu nền tràn 2px ra mọi phía — che khe hở sub-pixel (line trắng) quanh section ở DPR lẻ
       style={{ boxShadow: '0 0 0 2px #3A3A3A' }}
     >
-      <div className="max-w-480 md:-mt-20 -mt-20 mx-auto grid grid-cols-12 gap-y-10 lg:gap-33 items-start px-6 lg:px-36">
+      <div className="max-w-480 lg:-mt-20 mx-auto grid grid-cols-12 gap-y-10 lg:gap-33 items-start px-6 lg:px-36">
         {/* Left — main heading */}
         <div className="col-span-12 lg:col-span-7">
           <h2
