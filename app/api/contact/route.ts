@@ -60,16 +60,23 @@ export async function POST(request: Request) {
     )
   }
 
+  // Thời điểm gửi form — định dạng theo giờ Úc (DD/MM/YYYY, HH:mm:ss) cho dễ đọc trong sheet
+  const time = new Intl.DateTimeFormat('en-AU', {
+    timeZone: 'Australia/Sydney',
+    dateStyle: 'short',
+    timeStyle: 'medium',
+  }).format(new Date())
+
   try {
     const sheets = getSheetsClient()
     await sheets.spreadsheets.values.append({
       spreadsheetId,
-      // Columns order: fullname | email | company | phone | projectbrief
-      range: `${tab}!A:E`,
+      // Columns order: time | fullname | email | company | phone | projectbrief
+      range: `${tab}!A:F`,
       valueInputOption: 'USER_ENTERED',
       insertDataOption: 'INSERT_ROWS',
       requestBody: {
-        values: [[fullname, email, company, phone, projectbrief]],
+        values: [[time, fullname, email, company, phone, projectbrief]],
       },
     })
     return NextResponse.json({ ok: true })
