@@ -135,7 +135,7 @@ export default function ProductsSection() {
             >
               <Image
                 src="/Gemini_Generated_Image_ljpop7ljpop7ljpo 1.png"
-                alt="ASNZ-compliant factory architectural sketch"
+                alt="ASNZS-compliant factory architectural sketch"
                 width={860}
                 height={660}
                 quality={90}
