@@ -23,10 +23,10 @@ export default function Footer() {
             </h4>
             <div className="space-y-4">
               <a
-                href="mailto:info@onelinkconstruction.com"
+                href="mailto:info@olco.com.au"
                 className="block break-words text-white/50 hover:text-white transition-colors text-[15px] lg:text-[18px]"
               >
-                info@onelinkconstruction.com
+                info@olco.com.au
               </a>
               <a
                 href="tel:+61448146052"

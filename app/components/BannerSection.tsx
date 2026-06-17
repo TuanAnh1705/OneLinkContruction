@@ -72,9 +72,10 @@ export default function BannerSection() {
       {/* Content */}
       <div className="relative z-10 max-w-480 mx-auto h-full px-6 lg:px-[clamp(32px,7.5vw,144px)]">
         <div className="relative min-h-55 lg:min-h-[clamp(500px,33.7vw,647px)]">
-          {/* Helmet image — mobile: neo góc trái dưới; desktop: căn giữa */}
+          {/* Helmet image — mobile: neo góc trái dưới; desktop: căn giữa.
+              Tablet dọc (≥700px, gồm iPad 11"): thu nhỏ mũ + hạ thấp xuống một chút cho cân với badge */}
           <div
-            className="absolute bottom-0 z-10 -left-22 w-[78vw] h-[52vw] lg:left-1/2 lg:-translate-x-1/2 lg:w-[clamp(210px,51.4vw,986px)] lg:h-[clamp(150px,34.3vw,658px)]"
+            className="absolute bottom-0 z-10 -left-22 w-[78vw] h-[52vw] min-[700px]:w-[64vw] min-[700px]:h-[43vw] min-[700px]:-bottom-6 lg:left-1/2 lg:-translate-x-1/2 lg:bottom-0 lg:w-[clamp(210px,51.4vw,986px)] lg:h-[clamp(150px,34.3vw,658px)]"
           >
             {/* Wrapper riêng cho parallax — tránh đụng transform căn giữa của div ngoài */}
             <div ref={helmetRef} className="absolute inset-0" style={{ willChange: 'transform' }}>
@@ -111,11 +112,12 @@ export default function BannerSection() {
             className="hidden lg:block absolute z-20"
             style={{ right: 'clamp(170px,16.5625vw,318px)', bottom: 'clamp(64px,6.25vw,120px)' }}
           >
-            <BadgeButton label="AS/NZ compliant" noSlide />
+            <BadgeButton label="AS/NZS compliant" noSlide />
           </div>
 
-          {/* Badges mobile — cụm bên phải helmet, hơi đè lên helmet, xếp so le như thiết kế */}
-          <div className="lg:hidden absolute left-[37%] top-[45%] -translate-y-1/2 z-20 flex flex-col items-start gap-2.5">
+          {/* Badges mobile — cụm bên phải helmet, hơi đè lên helmet, xếp so le như thiết kế.
+              Trên tablet dọc (≥700px) helmet to ra nên dịch cụm sang phải + xuống để không đè lên logo OLCO */}
+          <div className="lg:hidden absolute left-[37%] top-[45%] min-[700px]:left-[49%] min-[700px]:top-[54%] -translate-y-1/2 z-20 flex flex-col items-start gap-2.5 min-[700px]:gap-4">
             {badges.map((label) => (
               <BadgeButton key={label} label={label} noSlide />
             ))}
