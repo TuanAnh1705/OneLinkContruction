@@ -11,7 +11,7 @@ gsap.registerPlugin(ScrollTrigger)
 const badges = [
   'Australian support team',
   'Quality control at every stage',
-  'AS/NZ compliant',
+  'AS/NZS compliant',
 ]
 
 export default function BannerSection() {
