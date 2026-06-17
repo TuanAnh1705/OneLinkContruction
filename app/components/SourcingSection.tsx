@@ -6,7 +6,9 @@ export default function SourcingSection() {
       // Phủ màu nền tràn 2px ra mọi phía — che khe hở sub-pixel (line trắng) quanh section ở DPR lẻ
       style={{ boxShadow: '0 0 0 2px #3A3A3A' }}
     >
-      <div className="max-w-480 lg:-mt-20 mx-auto grid grid-cols-12 gap-y-10 lg:gap-33 items-start px-6 lg:px-36">
+      {/* Padding ngang + gap cột scale theo viewport (gốc thiết kế 1920px: 144px≈7.5vw, 132px≈6.875vw)
+          để section co lại đều trên màn <15" thay vì giữ cố định gây bóp méo cột */}
+      <div className="max-w-480 lg:-mt-20 mx-auto grid grid-cols-12 gap-y-10 lg:gap-x-[clamp(40px,6.875vw,132px)] items-start px-6 lg:px-[clamp(32px,7.5vw,144px)]">
         {/* Left — main heading */}
         <div className="col-span-12 lg:col-span-7">
           <h2

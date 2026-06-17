@@ -70,7 +70,7 @@ export default function BannerSection() {
 
 
       {/* Content */}
-      <div className="relative z-10 max-w-480 mx-auto h-full px-6 lg:px-36">
+      <div className="relative z-10 max-w-480 mx-auto h-full px-6 lg:px-[clamp(32px,7.5vw,144px)]">
         <div className="relative min-h-55 lg:min-h-[clamp(500px,33.7vw,647px)]">
           {/* Helmet image — mobile: neo góc trái dưới; desktop: căn giữa */}
           <div
@@ -90,10 +90,10 @@ export default function BannerSection() {
             </div>
           </div>
 
-          {/* Badge left */}
+          {/* Badge left — vị trí scale theo viewport (gốc 1920px) để bám helmet khi màn nhỏ lại */}
           <div
             className="hidden lg:block absolute z-20"
-            style={{ left: '223px', top: '219px' }}
+            style={{ left: 'clamp(119px,11.615vw,223px)', top: 'clamp(117px,11.406vw,219px)' }}
           >
             <BadgeButton label="Australian support team" noSlide/>
           </div>
@@ -101,7 +101,7 @@ export default function BannerSection() {
           {/* Badge right top */}
           <div
             className="hidden lg:block absolute z-20"
-            style={{ right: '200px', top: '126px' }}
+            style={{ right: 'clamp(107px,10.417vw,200px)', top: 'clamp(67px,6.5625vw,126px)' }}
           >
             <BadgeButton label="Quality control at every stage" noSlide />
           </div>
@@ -109,7 +109,7 @@ export default function BannerSection() {
           {/* Badge right bottom */}
           <div
             className="hidden lg:block absolute z-20"
-            style={{ right: '318px', bottom: '120px' }}
+            style={{ right: 'clamp(170px,16.5625vw,318px)', bottom: 'clamp(64px,6.25vw,120px)' }}
           >
             <BadgeButton label="AS/NZ compliant" noSlide />
           </div>
@@ -129,7 +129,7 @@ export default function BannerSection() {
 function BadgeButton({ label, noSlide }: { label: string; noSlide?: boolean }) {
   return (
     <div
-      className="group flex items-center cursor-default rounded-lg lg:rounded-xl border border-[#D1D0E2]/60 transition-colors duration-300 hover:border-[#D1D0E2] px-4 py-2.5 lg:px-7 lg:py-4.5"
+      className="group flex items-center cursor-default rounded-lg lg:rounded-xl border border-[#D1D0E2]/60 transition-colors duration-300 hover:border-[#D1D0E2] px-4 py-2.5 lg:px-[clamp(18px,1.458vw,28px)] lg:py-[clamp(11px,0.9375vw,18px)]"
       // Nền giống các badge category ở hero section
       style={{ background: 'rgba(58,58,58,0.5)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)' }}
     >
