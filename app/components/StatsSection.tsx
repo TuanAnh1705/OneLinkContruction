@@ -5,14 +5,14 @@ import { useEffect, useRef, useState } from 'react'
 
 const stats = [
   {
-    icon: '/Coin, Money.svg',
+    icon: '/Coin-Money.svg',
     value: '40%',
     countTo: 40,
     label: 'Avg. Cost Savings',
     bg: '/Rectangle 9.png',
   },
   {
-    icon: '/Shield Check.svg',
+    icon: '/Shield-Check.svg',
     value: '100%',
     countTo: 100,
     label: 'AS/NZS Compliant',
@@ -25,7 +25,7 @@ const stats = [
     bg: '/Rectangle 9.png',
   },
   {
-    icon: '/Support Chat.svg',
+    icon: '/Support-Chat.svg',
     value: '1:1',
     label: 'Project Support',
     bg: '/Rectangle 9.png',
