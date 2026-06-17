@@ -6,7 +6,7 @@ import { motion, useScroll, useTransform, MotionValue, useSpring } from 'framer-
 import ContactButton from './ContactButton'
 
 const text =
-  'Currently available exclusively to existing customers – sign up now to gain early access to ASNZ-compliant factories before opening to the wider market.'
+  'Currently available exclusively to existing customers – sign up now to gain early access to ASNZS-compliant factories before opening to the wider market.'
 const words = text.split(' ')
 
 // Component con xử lý chữ: Chỉ HIỆN ra và GIỮ NGUYÊN
