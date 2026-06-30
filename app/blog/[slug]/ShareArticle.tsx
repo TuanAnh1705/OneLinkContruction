@@ -32,7 +32,7 @@ function IconButton({
       onClick={onClick}
       aria-label={label}
       title={label}
-      className="grid h-11 w-11 place-items-center rounded-xl text-white/85 transition-colors hover:bg-white/10 hover:text-white"
+      className="grid h-11 w-11 cursor-pointer place-items-center rounded-xl text-white/85 transition-colors hover:bg-white/10 hover:text-white"
       style={{ border: '1.5px solid rgba(255,255,255,0.25)' }}
     >
       {children}

@@ -42,6 +42,29 @@ export interface BlogCategory {
   documentId: string
   categoriesName: string
   url: string
+  DefaultSEO?: RawSeo | RawSeo[] | null
+}
+
+// Strapi SEO plugin component (DefaultSEO). May come back as a single object or a
+// 1-item array depending on the field config — normalizeSeo handles both.
+export interface RawSeo {
+  metaTitle?: string | null
+  metaDescription?: string | null
+  keywords?: string | null
+  metaImage?: StrapiImage | null
+}
+
+export interface SeoMeta {
+  metaTitle: string | null
+  metaDescription: string | null
+  keywords: string | null
+  metaImage: { url: string; alternativeText: string | null } | null
+}
+
+/** A tag (title + url) from the `section-blog.tag-section` block of a post. */
+export interface BlogTag {
+  title: string
+  url: string
 }
 
 export interface BlogBlock {
@@ -67,6 +90,9 @@ export interface BlogPost {
   authors?: BlogAuthor[]
   categories?: BlogCategory[]
   blocks?: BlogBlock[]
+  DefaultSEO?: RawSeo | RawSeo[] | null
+  // JSON-LD added in Strapi — may be a JSON object/array or a raw string. Null when unset.
+  seoSchemaJsonld?: unknown
 }
 
 // ─── Fetch helpers ─────────────────────────────────────────────────────────
@@ -93,8 +119,16 @@ interface StrapiList<T> {
   data: T[]
 }
 
+// DefaultSEO is a component; its scalar fields come automatically, only the
+// nested metaImage media needs explicit field selection (public-role friendly).
+const SEO_POPULATE =
+  'populate[DefaultSEO][populate][metaImage][fields][0]=url' +
+  '&populate[DefaultSEO][populate][metaImage][fields][1]=alternativeText'
+
 const POST_POPULATE =
-  'populate[featureImage]=true&populate[categories]=true&populate[authors][populate]=image'
+  'populate[featureImage]=true&populate[categories]=true' +
+  '&populate[authors][populate]=image&' +
+  SEO_POPULATE
 
 /** All visible articles, newest first (pinned ones float to the top). */
 export async function getBlogPosts(): Promise<BlogPost[]> {
@@ -115,12 +149,38 @@ export async function getAllSlugs(): Promise<string[]> {
   return posts.map(postSlug).filter(Boolean)
 }
 
-/** Categories that power the filter tabs. */
+/** Categories that power the filter tabs + their own landing pages. */
 export async function getBlogCategories(): Promise<BlogCategory[]> {
   const json = await strapiFetch<StrapiList<BlogCategory>>(
-    `/blog-categories?sort=id:asc&pagination[pageSize]=100`
+    `/blog-categories?sort=id:asc&pagination[pageSize]=100&${SEO_POPULATE}`,
+    ['strapi', 'blog-slugs']
   )
   return json?.data ?? []
+}
+
+/** Flat route segment of a category ("/project-cost-optimization" → "project-cost-optimization"). */
+export function categorySlug(cat: BlogCategory): string {
+  return (cat.url || '').replace(/^\//, '')
+}
+
+/** Category route segments — proxy.ts uses these to resolve domain/<category-url>. */
+export async function getAllCategorySlugs(): Promise<string[]> {
+  const cats = await getBlogCategories()
+  return cats.map(categorySlug).filter(Boolean)
+}
+
+/** A category by its flat route segment, or null. */
+export async function getCategoryBySlug(slug: string): Promise<BlogCategory | null> {
+  const target = `/${slug.replace(/^\//, '')}`
+  const cats = await getBlogCategories()
+  return cats.find((c) => c.url === target) ?? null
+}
+
+/** Visible posts that belong to a category (by its flat route segment). */
+export async function getPostsByCategorySlug(slug: string): Promise<BlogPost[]> {
+  const target = `/${slug.replace(/^\//, '')}`
+  const posts = await getBlogPosts()
+  return posts.filter((p) => (p.categories ?? []).some((c) => c.url === target))
 }
 
 /** A single article by its url slug (the `url` field is stored as "/the-slug"). */
@@ -148,6 +208,61 @@ export function mediaUrl(
 /** Turn a stored url ("/the-slug") into a route slug ("the-slug"). */
 export function postSlug(post: BlogPost): string {
   return (post.url || '').replace(/^\//, '')
+}
+
+// ─── SEO + tags ────────────────────────────────────────────────────────────────
+
+function firstSeo(raw?: RawSeo | RawSeo[] | null): RawSeo | null {
+  if (!raw) return null
+  return Array.isArray(raw) ? raw[0] ?? null : raw
+}
+
+/** Normalize a DefaultSEO component (post or category) to a flat shape, or null. */
+export function normalizeSeo(raw?: RawSeo | RawSeo[] | null): SeoMeta | null {
+  const seo = firstSeo(raw)
+  if (!seo) return null
+  const imgUrl = seo.metaImage ? mediaUrl(seo.metaImage) : null
+  return {
+    metaTitle: seo.metaTitle ?? null,
+    metaDescription: seo.metaDescription ?? null,
+    keywords: seo.keywords ?? null,
+    metaImage: imgUrl
+      ? { url: imgUrl, alternativeText: seo.metaImage?.alternativeText ?? null }
+      : null,
+  }
+}
+
+/**
+ * The article's JSON-LD (`seoSchemaJsonld`) as a ready-to-inject string, or null.
+ * Strapi may return an object/array (JSON field) or a string (text field) — both
+ * are handled; null/empty → null.
+ */
+export function getSchemaJsonld(post: BlogPost): string | null {
+  const v = post.seoSchemaJsonld
+  if (v == null) return null
+  if (typeof v === 'string') return v.trim() || null
+  try {
+    return JSON.stringify(v)
+  } catch {
+    return null
+  }
+}
+
+/** Tags (title + url) from the post's `section-blog.tag-section` block(s). */
+export function getPostTags(post: BlogPost): BlogTag[] {
+  const out: BlogTag[] = []
+  const push = (t: { title?: unknown; url?: unknown }) => {
+    if (typeof t.title === 'string' && t.title.trim()) {
+      out.push({ title: t.title.trim(), url: typeof t.url === 'string' ? t.url : '' })
+    }
+  }
+  for (const b of post.blocks ?? []) {
+    if (b.__component !== 'section-blog.tag-section') continue
+    push(b as { title?: unknown; url?: unknown })
+    const list = (b as { tags?: unknown }).tags
+    if (Array.isArray(list)) list.forEach((t) => push(t as { title?: unknown; url?: unknown }))
+  }
+  return out
 }
 
 // ─── Content processing (headings → ids + table of contents, summary) ────────

@@ -16,8 +16,12 @@ const DEV_REDIRECT_URL = process.env.DEV_REDIRECT_URL || STRAPI_URL
 // In-process cache so we don't hit Strapi on every navigation. On a single VPS
 // this persists across requests; the /api/blog-slugs fetch is also tagged for the
 // Data Cache as a second layer. On a fetch failure we keep serving the last known
-// list so a Strapi blip doesn't bounce every blog URL to the homepage.
-let slugCache: { slugs: string[]; at: number } | null = null
+// lists so a Strapi blip doesn't bounce every blog URL to the homepage.
+interface RoutingData {
+  slugs: string[]
+  categories: string[]
+}
+let slugCache: { data: RoutingData; at: number } | null = null
 const SLUG_TTL_MS = 10_000
 // When a single-segment path misses the cached list we refetch once to catch a
 // just-published post — but at most this often, so unknown URLs (bots probing
@@ -30,7 +34,7 @@ let lastForcedFetchAt = 0
 // faster and never edge-cached. Falls back to the public origin when unset.
 const INTERNAL_BASE_URL = process.env.INTERNAL_BASE_URL
 
-async function fetchSlugs(origin: string, forceFresh: boolean): Promise<string[] | null> {
+async function fetchRouting(origin: string, forceFresh: boolean): Promise<RoutingData | null> {
   try {
     const base = INTERNAL_BASE_URL || origin
     const res = await fetch(`${base}/api/blog-slugs`, {
@@ -39,31 +43,45 @@ async function fetchSlugs(origin: string, forceFresh: boolean): Promise<string[]
         : { next: { revalidate: 60, tags: ['blog-slugs'] } }),
     })
     if (!res.ok) return null
-    const json = (await res.json()) as { slugs?: unknown }
-    const slugs = Array.isArray(json.slugs) ? (json.slugs as string[]) : []
-    slugCache = { slugs, at: Date.now() }
-    return slugs
+    const json = (await res.json()) as { slugs?: unknown; categories?: unknown }
+    const data: RoutingData = {
+      slugs: Array.isArray(json.slugs) ? (json.slugs as string[]) : [],
+      categories: Array.isArray(json.categories) ? (json.categories as string[]) : [],
+    }
+    slugCache = { data, at: Date.now() }
+    return data
   } catch {
     return null
   }
 }
 
-async function getSlugs(origin: string): Promise<string[]> {
-  if (slugCache && Date.now() - slugCache.at < SLUG_TTL_MS) return slugCache.slugs
-  return (await fetchSlugs(origin, false)) ?? slugCache?.slugs ?? []
+async function getRouting(origin: string): Promise<RoutingData> {
+  if (slugCache && Date.now() - slugCache.at < SLUG_TTL_MS) return slugCache.data
+  return (
+    (await fetchRouting(origin, false)) ??
+    slugCache?.data ?? { slugs: [], categories: [] }
+  )
 }
 
-// Resolve a single root segment to a known blog slug. On a miss we do one
-// throttled cache-busting refetch before giving up, so a freshly published post
-// doesn't bounce visitors to the homepage for the length of the cache TTL.
-async function isSlug(origin: string, seg: string): Promise<boolean> {
-  const slugs = await getSlugs(origin)
-  if (slugs.includes(seg)) return true
+// Resolve a single root segment to a category or blog slug. On a miss we do one
+// throttled cache-busting refetch before giving up, so a freshly published
+// post/category doesn't bounce visitors to the homepage for the cache TTL.
+// Categories take precedence over posts (they don't collide in practice).
+async function resolveSegment(
+  origin: string,
+  seg: string
+): Promise<'category' | 'slug' | null> {
+  const data = await getRouting(origin)
+  if (data.categories.includes(seg)) return 'category'
+  if (data.slugs.includes(seg)) return 'slug'
 
-  if (Date.now() - lastForcedFetchAt < MISS_REFRESH_THROTTLE_MS) return false
+  if (Date.now() - lastForcedFetchAt < MISS_REFRESH_THROTTLE_MS) return null
   lastForcedFetchAt = Date.now()
-  const fresh = await fetchSlugs(origin, true)
-  return !!fresh && fresh.includes(seg)
+  const fresh = await fetchRouting(origin, true)
+  if (!fresh) return null
+  if (fresh.categories.includes(seg)) return 'category'
+  if (fresh.slugs.includes(seg)) return 'slug'
+  return null
 }
 
 // Strip identifying headers.
@@ -112,13 +130,19 @@ export async function proxy(request: NextRequest): Promise<NextResponse> {
     return stripHeaders(NextResponse.next())
   }
 
-  // 3. Single root segment that matches a blog slug → serve /blog/<slug> while
-  //    keeping the flat URL in the address bar (internal rewrite, no redirect).
+  // 3. Single root segment matching a category url or a blog slug → serve the
+  //    corresponding page while keeping the flat URL in the address bar (internal
+  //    rewrite, no redirect). Categories take precedence over posts.
   const segments = normalized.split('/').filter(Boolean)
-  if (segments.length === 1 && (await isSlug(url.origin, segments[0]))) {
-    const dest = new URL(`/blog/${segments[0]}`, request.url)
-    dest.search = url.search
-    return stripHeaders(NextResponse.rewrite(dest))
+  if (segments.length === 1) {
+    const kind = await resolveSegment(url.origin, segments[0])
+    if (kind) {
+      const target =
+        kind === 'category' ? `/blog/category/${segments[0]}` : `/blog/${segments[0]}`
+      const dest = new URL(target, request.url)
+      dest.search = url.search
+      return stripHeaders(NextResponse.rewrite(dest))
+    }
   }
 
   // 4. Anything else → send to the homepage. MUST be a temporary (307) redirect,

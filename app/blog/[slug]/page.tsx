@@ -8,8 +8,12 @@ import {
   processBlogContent,
   summarizeBlog,
   getAllSlugs,
+  normalizeSeo,
+  getSchemaJsonld,
+  getPostTags,
   mediaUrl,
 } from '@/app/lib/strapi'
+import { mergeSeoMetadata } from '@/app/lib/seo'
 
 // Prerender every published post at build time so SEO crawls hit static HTML.
 // Posts published after the build still render on-demand (dynamicParams) and are
@@ -72,7 +76,7 @@ export async function generateMetadata(
   const post = await getBlogPostBySlug(slug)
   if (!post) return { title: 'Insight not found | OLCO' }
   const summary = summarizeBlog(post, 180)
-  return {
+  const base: Metadata = {
     title: `${post.title} | OLCO Insights`,
     description: summary,
     openGraph: {
@@ -81,6 +85,8 @@ export async function generateMetadata(
       images: mediaUrl(post.featureImage) ? [mediaUrl(post.featureImage)!] : [],
     },
   }
+  // DefaultSEO từ Strapi ghi đè khi có; null → giữ nguyên base.
+  return mergeSeoMetadata(base, normalizeSeo(post.DefaultSEO))
 }
 
 export default async function BlogPostPage(props: PageProps<'/blog/[slug]'>) {
@@ -94,6 +100,11 @@ export default async function BlogPostPage(props: PageProps<'/blog/[slug]'>) {
   const summary = summarizeBlog(post)
   const featureSrc = mediaUrl(post.featureImage, 'large') ?? mediaUrl(post.featureImage)
 
+  // SEO JSON-LD do Strapi cung cấp (null → không render gì).
+  const jsonLd = getSchemaJsonld(post)
+  // Thẻ tag (title + url) từ block section-blog.tag-section.
+  const tags = getPostTags(post)
+
   const authors: SidebarAuthor[] = (post.authors ?? []).map((a) => ({
     name: a.name,
     role: a.roles || '',
@@ -104,6 +115,14 @@ export default async function BlogPostPage(props: PageProps<'/blog/[slug]'>) {
 
   return (
     <main className="relative min-h-screen bg-[#2E2E2E] text-white">
+      {/* SEO JSON-LD từ Strapi (seoSchemaJsonld). Null thì không render. */}
+      {jsonLd && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: jsonLd }}
+        />
+      )}
+
       {/* Navbar dùng chung với landing page */}
       <Navbar />
 
@@ -211,8 +230,34 @@ export default async function BlogPostPage(props: PageProps<'/blog/[slug]'>) {
           </aside>
         </div>
 
+        {/* Thẻ tag (title + url) — hiển thị phía trên nút Contact Us */}
+        {tags.length > 0 && (
+          <div className="mt-16 flex flex-wrap gap-2">
+            {tags.map((t) =>
+              t.url ? (
+                <a
+                  key={`${t.title}-${t.url}`}
+                  href={t.url}
+                  className="inline-flex cursor-pointer items-center rounded-lg px-4 py-2 text-[14px] font-medium text-white/85 transition-colors hover:text-white"
+                  style={{ background: 'rgba(255,255,255,0.1)' }}
+                >
+                  {t.title}
+                </a>
+              ) : (
+                <span
+                  key={t.title}
+                  className="inline-flex items-center rounded-lg px-4 py-2 text-[14px] font-medium text-white/85"
+                  style={{ background: 'rgba(255,255,255,0.1)' }}
+                >
+                  {t.title}
+                </span>
+              )
+            )}
+          </div>
+        )}
+
         {/* Contact Us — dùng chung nút ở landing page, link tới phần contact */}
-        <div className="mt-16 flex justify-start">
+        <div className={`${tags.length > 0 ? 'mt-6' : 'mt-16'} flex justify-start`}>
           <ContactButton label="Contact Us" href="/#contact" align="left" />
         </div>
 

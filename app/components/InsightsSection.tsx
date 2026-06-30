@@ -1,6 +1,7 @@
 import {
   getBlogPosts,
   getBlogCategories,
+  categorySlug,
   mediaUrl,
   postSlug,
   readingMinutes,
@@ -25,7 +26,9 @@ export default async function InsightsSection() {
     readTime: readingMinutes(post),
   }))
 
-  const categoryNames = categories.map((c) => c.categoriesName)
+  const categoryTabs = categories
+    .map((c) => ({ name: c.categoriesName, slug: categorySlug(c) }))
+    .filter((c) => c.slug)
 
   return (
     <section
@@ -37,7 +40,7 @@ export default async function InsightsSection() {
         See the Industry Latest Insights
       </h2>
 
-      <InsightsGrid posts={cards} categories={categoryNames} />
+      <InsightsGrid posts={cards} categories={categoryTabs} />
     </section>
   )
 }

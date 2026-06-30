@@ -2,7 +2,7 @@
 
 import Image from 'next/image'
 import Link from 'next/link'
-import { useMemo, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 
 export interface InsightCard {
   title: string
@@ -13,8 +13,12 @@ export interface InsightCard {
   readTime: number
 }
 
+export interface CategoryTab {
+  name: string
+  slug: string
+}
+
 const PAGE_SIZE = 6
-const ALL = 'All'
 
 // Badge/nút trên card — kích thước bằng đúng nút ContactButton ở landing page
 // (padding 10/20, font 15, line-height 20, radius 8). Màu để riêng ở từng chỗ.
@@ -32,50 +36,36 @@ export default function InsightsGrid({
   categories,
 }: {
   posts: InsightCard[]
-  categories: string[]
+  categories: CategoryTab[]
 }) {
-  const [active, setActive] = useState<string>(ALL)
   const [visible, setVisible] = useState<number>(PAGE_SIZE)
 
-  const tabs = useMemo(() => [ALL, ...categories], [categories])
-
-  const filtered = useMemo(
-    () =>
-      active === ALL
-        ? posts
-        : posts.filter((p) => p.categories.includes(active)),
-    [posts, active]
-  )
-
-  const shown = filtered.slice(0, visible)
-  const hasMore = visible < filtered.length
-
-  const pickTab = (tab: string) => {
-    setActive(tab)
-    setVisible(PAGE_SIZE)
-  }
+  const shown = posts.slice(0, visible)
+  const hasMore = visible < posts.length
 
   return (
     <>
-      {/* Filter tabs */}
+      {/* Tabs: "All" là view hiện tại; mỗi category điều hướng tới domain/<url> */}
       <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 mb-12">
-        {tabs.map((tab) => {
-          const isActive = tab === active
-          return (
-            <button
-              key={tab}
-              type="button"
-              onClick={() => pickTab(tab)}
-              className="rounded-lg px-4 py-2 text-[13px] sm:text-[14px] font-medium transition-colors duration-200"
-              style={{
-                background: isActive ? '#F4F4F4' : 'rgba(255,255,255,0.06)',
-                color: isActive ? '#3A3A3A' : 'rgba(255,255,255,0.7)',
-              }}
-            >
-              {tab}
-            </button>
-          )
-        })}
+        <span
+          className="rounded-lg px-4 py-2 text-[13px] sm:text-[14px] font-medium"
+          style={{ background: '#F4F4F4', color: '#3A3A3A' }}
+        >
+          All
+        </span>
+        {categories.map((c) => (
+          <Link
+            key={c.slug}
+            href={`/${c.slug}`}
+            className="cursor-pointer rounded-lg px-4 py-2 text-[13px] sm:text-[14px] font-medium transition-colors duration-200"
+            style={{
+              background: 'rgba(255,255,255,0.06)',
+              color: 'rgba(255,255,255,0.7)',
+            }}
+          >
+            {c.name}
+          </Link>
+        ))}
       </div>
 
       {/* Cards */}
@@ -85,8 +75,8 @@ export default function InsightsGrid({
         ))}
       </div>
 
-      {filtered.length === 0 && (
-        <p className="text-center text-white/50 mt-8">No insights in this category yet.</p>
+      {posts.length === 0 && (
+        <p className="text-center text-white/50 mt-8">No insights yet.</p>
       )}
 
       {/* More */}
@@ -95,7 +85,7 @@ export default function InsightsGrid({
           <button
             type="button"
             onClick={() => setVisible((v) => v + PAGE_SIZE)}
-            className="text-[15px] font-medium text-white underline underline-offset-8 decoration-white/40 hover:decoration-white transition-colors"
+            className="cursor-pointer text-[15px] font-medium text-white underline underline-offset-8 decoration-white/40 hover:decoration-white transition-colors"
           >
             More Insights
           </button>
