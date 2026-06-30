@@ -1,6 +1,7 @@
 'use client'
 
 import Image from 'next/image'
+import Link from 'next/link'
 import { useState } from 'react'
 
 interface ContactButtonProps {
@@ -68,6 +69,11 @@ export default function ContactButton({
     </>
   )
 
+  // Link nội bộ (vd "/#contact" từ trang blog) → dùng Next Link + scroll={false}
+  // để ScrollManager cuộn tới section. Hash trong cùng trang ("#contact") giữ <a>
+  // để SmoothScroll bắt và cuộn mượt.
+  const isInternalRoute = href.startsWith('/')
+
   return (
     <div style={{ display: 'flex', justifyContent: align === 'left' ? 'flex-start' : 'flex-end' }}>
       {as === 'button' ? (
@@ -79,6 +85,16 @@ export default function ContactButton({
         >
           {inner}
         </button>
+      ) : isInternalRoute ? (
+        <Link
+          href={href}
+          scroll={false}
+          style={sharedStyle}
+          onMouseEnter={() => setHovered(true)}
+          onMouseLeave={() => setHovered(false)}
+        >
+          {inner}
+        </Link>
       ) : (
         <a
           href={href}

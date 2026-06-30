@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server'
+import { contactRateLimit, getClientIP, rateLimitResponse } from '@/app/lib/rate-limit'
 
 // Write endpoint — không prerender/cache.
 export const runtime = 'nodejs'
@@ -28,6 +29,15 @@ const PORTAL_ID = process.env.HUBSPOT_PORTAL_ID || '46681098'
 const FORM_GUID = process.env.HUBSPOT_FORM_GUID || 'd4206b98-f717-4b50-bcae-a73045f15e3f'
 
 export async function POST(request: Request) {
+  // Rate limit per IP (5/min) — chặn spam/crawler bắn form dồn dập. Bỏ qua khi
+  // chưa cấu hình Upstash (contactRateLimit = null) để dev local không vỡ.
+  if (contactRateLimit) {
+    const { success, limit, remaining, reset } = await contactRateLimit.limit(
+      getClientIP(request)
+    )
+    if (!success) return rateLimitResponse(limit, remaining, reset)
+  }
+
   let body: ContactPayload
   try {
     body = await request.json()

@@ -7,6 +7,7 @@ import SourcingSection from './components/SourcingSection'
 import BannerSection from './components/BannerSection'
 import FeaturesSection from './components/FeaturesSection'
 import StatsSection from './components/StatsSection'
+import InsightsSection from './components/InsightsSection'
 import ContactSection from './components/ContactSection'
 import Footer from './components/Footer'
 import BackToTopButton from './components/BackToTopButton'
@@ -26,6 +27,7 @@ export default function Home() {
         <FeaturesSection />
         <StatsSection />
       </div>
+      <InsightsSection />
       <ContactSection />
       <Footer />
       <BackToTopButton />

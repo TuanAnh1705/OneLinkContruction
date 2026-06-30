@@ -170,6 +170,56 @@ body {
   animation: fade-up 0.8s ease forwards;
 }
 
+/* ─── Blog article content (rendered from Strapi BlogContent HTML) ───────────
+   Body copy keeps the inline font-sizes the CMS editor stores (18px / 15px);
+   we only own colour, rhythm, and the section-heading styling. */
+.blog-content {
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 18px;
+  line-height: 1.75;
+  max-width: 720px;
+}
+.blog-content p {
+  margin: 0 0 1.1em;
+}
+.blog-content strong {
+  color: #ffffff;
+  font-weight: 600;
+}
+.blog-content a {
+  color: #99c2ff;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.blog-content ul,
+.blog-content ol {
+  margin: 0 0 1.2em;
+  padding-left: 1.4em;
+}
+.blog-content ul { list-style: disc; }
+.blog-content ol { list-style: decimal; }
+.blog-content li { margin: 0.5em 0; }
+.blog-content img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 14px;
+  margin: 1.6em 0;
+}
+.blog-content .blog-heading {
+  color: #ffffff;
+  font-size: clamp(24px, 2.6vw, 32px);
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  margin: 2em 0 0.7em;
+  /* Offset so anchored scroll (via Lenis) clears the sticky top bar */
+  scroll-margin-top: 96px;
+}
+.blog-content .blog-heading:first-child {
+  margin-top: 0;
+}
+
 /* Dropdown morph — expands from pill height (40px) downward */
 @keyframes dropdownMorphOpen {
   from { clip-path: inset(0 0 calc(100% - 44px) 0 round 10px); }

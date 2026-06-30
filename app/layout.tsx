@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { Epilogue } from 'next/font/google'
 import './globals.css'
 import SmoothScroll from './components/SmoothScroll'
+import ScrollManager from './components/ScrollManager'
 
 const epilogue = Epilogue({
   variable: '--font-epilogue',
@@ -30,7 +31,10 @@ export default function RootLayout({
   return (
     <html lang="en" className={epilogue.variable}>
       <body className="antialiased">
-        <SmoothScroll>{children}</SmoothScroll>
+        <SmoothScroll>
+          <ScrollManager />
+          {children}
+        </SmoothScroll>
       </body>
     </html>
   )

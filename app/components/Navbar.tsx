@@ -1,6 +1,8 @@
 'use client'
 
 import Image from 'next/image'
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
 
 const navLinks = [
@@ -9,7 +11,31 @@ const navLinks = [
   { label: 'Why OLCO', href: '#why-olco' },
 ]
 
+// Trên landing page: dùng <a href="#..."> để SmoothScroll bắt và cuộn mượt trong trang.
+// Ngoài landing (vd blog): dùng <Link href="/#..."> để quay về landing rồi ScrollManager
+// cuộn tới đúng section. scroll={false} để Next không tự nhảy, nhường cho ScrollManager.
+type SmartLinkProps = React.ComponentProps<'a'> & { onHome: boolean; href: string }
+function SmartLink({ onHome, href, children, ...rest }: SmartLinkProps) {
+  if (onHome) {
+    return (
+      <a href={href} {...rest}>
+        {children}
+      </a>
+    )
+  }
+  return (
+    <Link href={href} scroll={false} {...rest}>
+      {children}
+    </Link>
+  )
+}
+
 export default function Navbar() {
+  const pathname = usePathname()
+  const onHome = pathname === '/'
+  // '#services' khi ở landing, '/#services' khi ở trang khác
+  const hrefFor = (hash: string) => (onHome ? hash : `/${hash}`)
+
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
   const [isClosing, setIsClosing] = useState(false)
@@ -127,9 +153,10 @@ export default function Navbar() {
                 }}
               >
                 {navLinks.map((link) => (
-                  <a
+                  <SmartLink
                     key={link.label}
-                    href={link.href}
+                    onHome={onHome}
+                    href={hrefFor(link.href)}
                     className="text-[15px] font-medium text-[#FFFFFF]"
                     onMouseEnter={() => setHoveredLink(link.label)}
                     onMouseLeave={() => setHoveredLink(null)}
@@ -141,7 +168,7 @@ export default function Navbar() {
                     }}
                   >
                     {link.label}
-                  </a>
+                  </SmartLink>
                 ))}
               </div>
 
@@ -232,9 +259,10 @@ export default function Navbar() {
                 {/* Nav links */}
                 <div style={{ padding: '4px 0 2px' }}>
                   {navLinks.map((link) => (
-                    <a
+                    <SmartLink
                       key={link.label}
-                      href={link.href}
+                      onHome={onHome}
+                      href={hrefFor(link.href)}
                       onClick={closeMenu}
                       onMouseEnter={() => setHoveredLink(link.label)}
                       onMouseLeave={() => setHoveredLink(null)}
@@ -250,7 +278,7 @@ export default function Navbar() {
                       }}
                     >
                       {link.label}
-                    </a>
+                    </SmartLink>
                   ))}
                 </div>
               </div>
@@ -258,8 +286,9 @@ export default function Navbar() {
           </div>
 
           {/* Build With Us */}
-          <a
-            href="#contact"
+          <SmartLink
+            onHome={onHome}
+            href={hrefFor('#contact')}
             className="shrink-0 flex items-center font-semibold"
             onMouseEnter={() => setBuildHovered(true)}
             onMouseLeave={() => setBuildHovered(false)}
@@ -281,7 +310,7 @@ export default function Navbar() {
             }}
           >
             Build With Us
-          </a>
+          </SmartLink>
         </div>
 
         {/* Mobile hamburger — 3 gạch gradient, nền trắng/đen đổi theo màu nền section */}
@@ -349,9 +378,10 @@ export default function Navbar() {
           {/* Nav links */}
           <div className="flex flex-col" style={{ padding: '8px 24px' }}>
             {navLinks.map((link) => (
-              <a
+              <SmartLink
                 key={link.label}
-                href={link.href}
+                onHome={onHome}
+                href={hrefFor(link.href)}
                 onClick={closeMenu}
                 style={{
                   display: 'block',
@@ -364,14 +394,15 @@ export default function Navbar() {
                 }}
               >
                 {link.label}
-              </a>
+              </SmartLink>
             ))}
           </div>
 
           {/* CTA — đáy panel */}
           <div className="mt-auto" style={{ padding: '24px' }}>
-            <a
-              href="#contact"
+            <SmartLink
+              onHome={onHome}
+              href={hrefFor('#contact')}
               onClick={closeMenu}
               className="flex items-center justify-center font-semibold"
               style={{
@@ -384,7 +415,7 @@ export default function Navbar() {
               }}
             >
               Build With Us
-            </a>
+            </SmartLink>
           </div>
         </div>
       </div>
