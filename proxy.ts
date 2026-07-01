@@ -34,9 +34,11 @@ let lastForcedFetchAt = 0
 // faster and never edge-cached. Falls back to the public origin when unset.
 const INTERNAL_BASE_URL = process.env.INTERNAL_BASE_URL
 
-async function fetchRouting(origin: string, forceFresh: boolean): Promise<RoutingData | null> {
+async function fetchRoutingFrom(
+  base: string,
+  forceFresh: boolean
+): Promise<RoutingData | null> {
   try {
-    const base = INTERNAL_BASE_URL || origin
     const res = await fetch(`${base}/api/blog-slugs`, {
       ...(forceFresh
         ? { cache: 'no-store' as const }
@@ -44,15 +46,33 @@ async function fetchRouting(origin: string, forceFresh: boolean): Promise<Routin
     })
     if (!res.ok) return null
     const json = (await res.json()) as { slugs?: unknown; categories?: unknown }
-    const data: RoutingData = {
+    return {
       slugs: Array.isArray(json.slugs) ? (json.slugs as string[]) : [],
       categories: Array.isArray(json.categories) ? (json.categories as string[]) : [],
     }
-    slugCache = { data, at: Date.now() }
-    return data
   } catch {
     return null
   }
+}
+
+async function fetchRouting(origin: string, forceFresh: boolean): Promise<RoutingData | null> {
+  // Prefer INTERNAL_BASE_URL (direct Node hit, never edge-cached) but fall back to
+  // the public origin when it's unreachable — e.g. local dev on :3000 while the
+  // configured internal base points at the VPS port. Without the fallback a port
+  // mismatch bounces every blog/category URL to the homepage.
+  const bases =
+    INTERNAL_BASE_URL && INTERNAL_BASE_URL !== origin
+      ? [INTERNAL_BASE_URL, origin]
+      : [origin]
+
+  for (const base of bases) {
+    const data = await fetchRoutingFrom(base, forceFresh)
+    if (data) {
+      slugCache = { data, at: Date.now() }
+      return data
+    }
+  }
+  return null
 }
 
 async function getRouting(origin: string): Promise<RoutingData> {

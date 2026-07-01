@@ -361,32 +361,94 @@ export function processBlogContent(html: string): { html: string; toc: TocItem[]
   return { html: out, toc }
 }
 
-/**
- * A short, honest summary of the article assembled straight from the CMS data —
- * uses the `description` field when present, otherwise the opening prose.
- */
-export function summarizeBlog(post: BlogPost, maxChars = 360): string {
-  if (post.description && post.description.trim()) return post.description.trim()
+// Trim to a clean word boundary at most `maxChars` long, adding an ellipsis only
+// when we actually cut the text short.
+function clampSummary(text: string, maxChars: number): string {
+  const t = text.replace(/\s+/g, ' ').trim()
+  if (t.length <= maxChars) return t
+  const slice = t.slice(0, maxChars)
+  const cut = slice.lastIndexOf(' ')
+  return `${(cut > maxChars * 0.6 ? slice.slice(0, cut) : slice).trim()}…`
+}
 
-  const html = getBlogContentHtml(post)
-  // Drop heading spans so the summary reads from body copy, not section titles.
-  const body = html.replace(
+// The full article body as plain text (headings dropped so we summarise the prose,
+// not the section titles).
+function articleBodyText(post: BlogPost): string {
+  const body = getBlogContentHtml(post).replace(
     /<span style="font-size:(\d+)px;">[\s\S]*?<\/span>\s*<\/span>/g,
     (m, size: string) => (Number(size) >= HEADING_FONT_MIN ? '' : m)
   )
-  const text = decodeEntities(stripTags(body))
+  return decodeEntities(stripTags(body))
     .replace(/ /g, ' ')
     .replace(/\s+/g, ' ')
     .trim()
+}
 
-  if (text.length <= maxChars) return text
-  const slice = text.slice(0, maxChars)
-  const stop = Math.max(
-    slice.lastIndexOf('. '),
-    slice.lastIndexOf('! '),
-    slice.lastIndexOf('? ')
-  )
-  return stop > 140 ? slice.slice(0, stop + 1) : `${slice.trim()}…`
+const SUMMARY_STOPWORDS = new Set(
+  (
+    'a an the and or but of to in on for with at by from as is are was were be been being ' +
+    'this that these those it its you your we our they their he she his her i me my will ' +
+    'would can could should may might must not no do does did has have had also more than ' +
+    'then so such into over under out up down about which who whom what when where how'
+  ).split(' ')
+)
+
+// Reads the WHOLE article and picks the sentences that best represent it (highest
+// average term-frequency), kept in their original order, up to `maxChars`. Used
+// only as a fallback when the CMS has no curated summary, so a post still gets a
+// real digest of the piece instead of a truncated intro.
+function extractiveSummary(text: string, maxChars: number): string {
+  const sentences = (text.match(/[^.!?]+[.!?]+/g) ?? [])
+    .map((s) => s.trim())
+    .filter((s) => s.length > 20)
+  if (sentences.length < 2) return clampSummary(text, maxChars)
+
+  const words = (s: string) => s.toLowerCase().match(/[a-z0-9']+/g) ?? []
+  const freq = new Map<string, number>()
+  for (const s of sentences) {
+    for (const w of words(s)) {
+      if (w.length > 2 && !SUMMARY_STOPWORDS.has(w)) freq.set(w, (freq.get(w) ?? 0) + 1)
+    }
+  }
+
+  const score = (s: string) => {
+    const ws = words(s).filter((w) => w.length > 2 && !SUMMARY_STOPWORDS.has(w))
+    if (!ws.length) return 0
+    return ws.reduce((sum, w) => sum + (freq.get(w) ?? 0), 0) / ws.length
+  }
+
+  const ranked = sentences
+    .map((s, i) => ({ s, i, score: score(s) }))
+    .sort((a, b) => b.score - a.score)
+
+  const chosen: { s: string; i: number }[] = []
+  let len = 0
+  for (const r of ranked) {
+    if (len + r.s.length + 1 > maxChars) continue
+    chosen.push(r)
+    len += r.s.length + 1
+    if (len >= maxChars * 0.75) break
+  }
+  if (!chosen.length) return clampSummary(ranked[0].s, maxChars)
+
+  chosen.sort((a, b) => a.i - b.i)
+  return clampSummary(chosen.map((c) => c.s).join(' '), maxChars)
+}
+
+/**
+ * A short, honest summary of the article - a single paragraph of at most
+ * `maxChars` characters. Prefers the curated SEO meta description (a human-written
+ * digest of the whole piece), then the post's `description`, and only falls back
+ * to an extractive summary built from the full body when neither exists.
+ */
+export function summarizeBlog(post: BlogPost, maxChars = 180): string {
+  const meta = firstSeo(post.DefaultSEO)?.metaDescription?.trim()
+  if (meta) return clampSummary(meta, maxChars)
+
+  if (post.description && post.description.trim())
+    return clampSummary(post.description.trim(), maxChars)
+
+  return extractiveSummary(articleBodyText(post), maxChars)
 }
 
 /** Rough read time in minutes from the article body. */

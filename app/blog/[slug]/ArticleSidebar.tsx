@@ -60,10 +60,10 @@ export default function ArticleSidebar({
   }, [toc])
 
   return (
-    // Sticky column gói gọn trong chiều cao màn hình để cả 3 card vừa vặn khi
-    // scroll (không để Share this article bị tụt xuống cuối bài). Nếu màn hình
-    // quá thấp thì cột tự cuộn nội bộ thay vì cắt mất card.
-    <div className="lg:sticky lg:top-28 flex flex-col gap-5 lg:max-h-[calc(100vh-8rem)] lg:overflow-y-auto">
+    // Cột chảy tự nhiên theo trang: không giới hạn chiều cao, không cuộn nội bộ.
+    // Nội dung dài (author + TOC dài + share) cứ dài ra và đọc hết bằng cách cuộn
+    // trang — không bị cắt trong một khung có thanh cuộn riêng.
+    <div className="flex flex-col gap-5">
       {/* Author cards */}
       {authors.map((author) => (
         <div
@@ -72,13 +72,13 @@ export default function ArticleSidebar({
           style={{ background: '#F4F4F4', color: '#3A3A3A' }}
         >
           <div className="flex items-center gap-4">
-            <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-xl bg-black/5">
+            <div className="relative h-32 w-27 shrink-0 overflow-hidden rounded-xl bg-black/5">
               {author.image && (
                 <Image
                   src={author.image}
                   alt={author.name}
                   fill
-                  sizes="80px"
+                  sizes="114px"
                   className="object-cover"
                 />
               )}

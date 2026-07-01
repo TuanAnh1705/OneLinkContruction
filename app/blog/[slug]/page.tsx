@@ -165,28 +165,29 @@ export default async function BlogPostPage(props: PageProps<'/blog/[slug]'>) {
               </span>
             ))}
           </div>
+        </div>
 
-          <h1
-            className="font-medium leading-[1.1] tracking-tight"
-            style={{ fontSize: 'clamp(30px, 4vw, 66px)' }}
-          >
-            {post.title}
-          </h1>
+        {/* Title spans the full article width (same as the feature image). */}
+        <h1
+          className="font-medium leading-[1.1] tracking-tight"
+          style={{ fontSize: 'clamp(30px, 4vw, 66px)' }}
+        >
+          {post.title}
+        </h1>
 
-          <div className="mt-5 flex flex-wrap items-center gap-x-3 gap-y-1 text-[14px] text-white/55">
-            {authors.length > 0 && (
-              <span className="text-white/80">
-                {authors.map((a) => a.name).join(', ')}
-              </span>
-            )}
-            {authors.length > 0 && <span aria-hidden>·</span>}
-            <span>{formatDate(post.publishedAt)}</span>
-          </div>
+        <div className="mt-5 flex max-w-3xl flex-wrap items-center gap-x-3 gap-y-1 text-[14px] text-white/55">
+          {authors.length > 0 && (
+            <span className="text-white/80">
+              {authors.map((a) => a.name).join(', ')}
+            </span>
+          )}
+          {authors.length > 0 && <span aria-hidden>·</span>}
+          <span>{formatDate(post.publishedAt)}</span>
         </div>
 
         {/* Feature image */}
         {featureSrc && (
-          <div className="relative mt-8 aspect-16/9 w-full overflow-hidden rounded-2xl bg-white/5">
+          <div className="relative mt-8 aspect-video w-full overflow-hidden rounded-2xl bg-white/5">
             <Image
               src={featureSrc}
               alt={post.featureImage?.alternativeText || post.title}

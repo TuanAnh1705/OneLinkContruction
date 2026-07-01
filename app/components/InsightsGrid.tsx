@@ -2,7 +2,7 @@
 
 import Image from 'next/image'
 import Link from 'next/link'
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 export interface InsightCard {
   title: string
@@ -39,32 +39,78 @@ export default function InsightsGrid({
   categories: CategoryTab[]
 }) {
   const [visible, setVisible] = useState<number>(PAGE_SIZE)
+  // Active filter = category slug ('' = All). Clicking a tab filters the grid in
+  // place and syncs the address bar to domain/<slug> via the History API — no
+  // navigation. Landing directly on /<slug> is still served by the category page.
+  const [activeSlug, setActiveSlug] = useState<string>('')
 
-  const shown = posts.slice(0, visible)
-  const hasMore = visible < posts.length
+  // Keep the filter in sync when the user uses the browser back/forward buttons.
+  useEffect(() => {
+    const syncFromUrl = () => {
+      const seg = window.location.pathname.replace(/^\/+|\/+$/g, '')
+      setActiveSlug(categories.some((c) => c.slug === seg) ? seg : '')
+    }
+    syncFromUrl()
+    window.addEventListener('popstate', syncFromUrl)
+    return () => window.removeEventListener('popstate', syncFromUrl)
+  }, [categories])
+
+  const selectCategory = (slug: string) => {
+    setActiveSlug(slug)
+    setVisible(PAGE_SIZE)
+    // Bypass Next's patched history.pushState: changing the *pathname* through it
+    // makes the App Router treat it as a soft navigation (scrolls to top /
+    // refetches the route). The native prototype method updates only the address
+    // bar. We keep the existing history state so browser back/forward still works.
+    History.prototype.pushState.call(
+      window.history,
+      window.history.state,
+      '',
+      slug ? `/${slug}` : '/'
+    )
+  }
+
+  const activeName = categories.find((c) => c.slug === activeSlug)?.name
+  const filtered = activeName
+    ? posts.filter((p) => p.categories.includes(activeName))
+    : posts
+
+  const shown = filtered.slice(0, visible)
+  const hasMore = visible < filtered.length
+
+  const tabBase =
+    'cursor-pointer rounded-lg px-4 py-2 text-[13px] sm:text-[14px] font-medium transition-colors duration-200'
+  const activeStyle: React.CSSProperties = { background: '#F4F4F4', color: '#3A3A3A' }
+  const idleStyle: React.CSSProperties = {
+    background: 'rgba(255,255,255,0.06)',
+    color: 'rgba(255,255,255,0.7)',
+  }
 
   return (
     <>
-      {/* Tabs: "All" là view hiện tại; mỗi category điều hướng tới domain/<url> */}
+      {/* Tabs: filter the grid in place; the address bar reflects domain/<url>. */}
       <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 mb-12">
-        <span
-          className="rounded-lg px-4 py-2 text-[13px] sm:text-[14px] font-medium"
-          style={{ background: '#F4F4F4', color: '#3A3A3A' }}
+        <button
+          type="button"
+          onClick={() => selectCategory('')}
+          className={tabBase}
+          style={activeSlug ? idleStyle : activeStyle}
         >
           All
-        </span>
+        </button>
         {categories.map((c) => (
-          <Link
+          <a
             key={c.slug}
             href={`/${c.slug}`}
-            className="cursor-pointer rounded-lg px-4 py-2 text-[13px] sm:text-[14px] font-medium transition-colors duration-200"
-            style={{
-              background: 'rgba(255,255,255,0.06)',
-              color: 'rgba(255,255,255,0.7)',
+            onClick={(e) => {
+              e.preventDefault()
+              selectCategory(c.slug)
             }}
+            className={tabBase}
+            style={activeSlug === c.slug ? activeStyle : idleStyle}
           >
             {c.name}
-          </Link>
+          </a>
         ))}
       </div>
 
@@ -75,7 +121,7 @@ export default function InsightsGrid({
         ))}
       </div>
 
-      {posts.length === 0 && (
+      {filtered.length === 0 && (
         <p className="text-center text-white/50 mt-8">No insights yet.</p>
       )}
 
