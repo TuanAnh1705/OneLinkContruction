@@ -9,7 +9,7 @@ const navLinks = [
   { label: 'Services', href: '#services' },
   { label: 'Products', href: '#featured-products' },
   { label: 'Why OLCO', href: '#why-olco' },
-  { label: 'Insights', href: '#insights' },
+  // { label: 'Insights', href: '#insights' },
 ]
 
 // Trên landing page: dùng <a href="#..."> để SmoothScroll bắt và cuộn mượt trong trang.

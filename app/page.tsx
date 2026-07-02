@@ -27,7 +27,7 @@ export default function Home() {
         <FeaturesSection />
         <StatsSection />
       </div>
-      <InsightsSection />
+      {/* <InsightsSection /> */}
       <ContactSection />
       <Footer />
       <BackToTopButton />
